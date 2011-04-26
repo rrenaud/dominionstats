@@ -12,6 +12,7 @@ The code depends on:
 - pymongo (http://api.mongodb.org/python/1.9%2B/index.html)
 - web.py (http://webpy.org)
 - argparse (included in Python 2.7/3.2)
+- simplejson (http://pypi.python.org/pypi/simplejson/)
 
 See INSTALL for instructions on how to set up the database.
 
