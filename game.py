@@ -6,7 +6,7 @@ import itertools
 
 WIN, LOSS, TIE = range(3)
 
-class PlayerDeckChange:
+class PlayerDeckChange(object):
     CATEGORIES = ['buys', 'gains', 'returns', 'trashes']
 
     def __init__(self, name):
@@ -23,7 +23,7 @@ class PlayerDeckChange:
         for cat in self.CATEGORIES:
             getattr(self, cat).extend(getattr(other_changes, cat))
 
-class Turn:
+class Turn(object):
     def __init__(self, turn_dict, game, player, turn_no, poss_no):
         self.game = game
         self.player = player
@@ -72,7 +72,8 @@ class Turn:
 
         return ret
 
-class PlayerDeck:
+
+class PlayerDeck(object):
     def __init__(self, player_deck_dict, game):
         self.raw_player = player_deck_dict
         self.game = game
@@ -102,24 +103,25 @@ class PlayerDeck:
 
     def Deck(self):
         return self.deck
-    
+
     @staticmethod
-    def PlayerLink(player_name, anchor_text = None):
+    def PlayerLink(player_name, anchor_text=None):
         if anchor_text is None:
             anchor_text = player_name
-        return '<a href="/player?player=%s">%s</a>' % (player_name, 
+        return '<a href="/player?player=%s">%s</a>' % (player_name,
                                                        anchor_text)
 
-    def GameResultColor(self, opp = None):
+    def GameResultColor(self, opp=None):
         # this should be implemented in turns of GameResult.WinLossTie()
         if self.WinPoints() > 1:
             return 'green'
         if (opp and opp.WinPoints() == self.WinPoints()) or (
-            self.WinPoints() == 1):
+        self.WinPoints() == 1):
             return '#555555'
         return 'red'
 
-class Game:
+
+class Game(object):
     def __init__(self, game_dict):
         self.turns = []
         self.supply = game_dict['supply']
@@ -141,8 +143,8 @@ class Game:
                     turn_ct += 1
                     poss_ct, out_ct = 0, 0
                 self.turns.append(Turn(turn, game_dict, pd, turn_ct, poss_ct))
-                    
-        self.turns.sort(key=lambda x: (x.TurnNo(), 
+
+        self.turns.sort(key=lambda x: (x.TurnNo(),
                                        x.Player().TurnOrder(),
                                        x.PossNo()))
 
@@ -173,8 +175,9 @@ class Game:
         return yyyymmdd_date
 
     def Date(self):
-	from datetime import datetime
-	return datetime.strptime( Game.DateFromId(self.id), "%Y%m%d" )
+        from datetime import datetime
+
+        return datetime.strptime(Game.DateFromId(self.id), "%Y%m%d")
 
     def Id(self):
         return self.id
@@ -182,7 +185,7 @@ class Game:
     def IsotropicUrl(self):
         yyyymmdd_date = Game.DateFromId(self.id)
         return 'http://dominion.isotropic.org/gamelog/%s/%s/%s.gz' % (
-            yyyymmdd_date[:6], yyyymmdd_date[-2:], self.id)
+        yyyymmdd_date[:6], yyyymmdd_date[-2:], self.id)
 
     @staticmethod
     def CouncilRoomOpenLinkFromId(game_id):
@@ -227,8 +230,8 @@ class Game:
     def CardsAccumulatedPerPlayer(self):
         if 'card_accum_cache' in self.__dict__:
             return self.card_accum_cache
-        ret = dict((pd.Name(), collections.defaultdict(int)) for 
-                   pd in self.PlayerDecks())
+        ret = dict((pd.Name(), collections.defaultdict(int)) for
+        pd in self.PlayerDecks())
         for turn in self.Turns():
             for accumed_card in turn.PlayerAccumulates():
                 ret[turn.Player().Name()][accumed_card] += 1
@@ -247,7 +250,7 @@ class Game:
     def AnyResigned(self):
         return any(pd.Resigned() for pd in self.PlayerDecks())
 
-    def ShortRenderCellWithPerspective(self, target_player, opp_player = None):
+    def ShortRenderCellWithPerspective(self, target_player, opp_player=None):
         target_deck = self.GetPlayerDeck(target_player)
         opp_deck = None
         if opp_player is not None:
@@ -266,23 +269,24 @@ class Game:
 
     def GameStateIterator(self):
         return GameState(self)
-        
-class GameState:
+
+
+class GameState(object):
     def __init__(self, game):
         self.game = game
-        self.turn_ordered_players = sorted(game.PlayerDecks(), 
-                                           key = PlayerDeck.TurnOrder)
-        self.supply = ConvertibleDefaultDict(value_type = int)
+        self.turn_ordered_players = sorted(game.PlayerDecks(),
+                                           key=PlayerDeck.TurnOrder)
+        self.supply = ConvertibleDefaultDict(value_type=int)
         num_players = len(game.PlayerDecks())
         for card in itertools.chain(card_info.EVERY_SET_CARDS, game.Supply()):
             self.supply[card] = card_info.NumCopiesPerGame(card, num_players)
 
         self.player_decks = ConvertibleDefaultDict(
-            value_type = lambda: ConvertibleDefaultDict(int))
+            value_type=lambda: ConvertibleDefaultDict(int))
 
-        self.supply['Copper'] = self.supply['Copper']  - (
-            len(self.turn_ordered_players) * 7)
-            
+        self.supply['Copper'] = self.supply['Copper'] - (
+        len(self.turn_ordered_players) * 7)
+
         for player in self.turn_ordered_players:
             self.player_decks[player.Name()]['Copper'] = 7
             self.player_decks[player.Name()]['Estate'] = 3
@@ -301,7 +305,7 @@ class GameState:
                 self.player_decks[name][card] += deck_dir
 
         for deck_change in turn.DeckChanges():
-            ApplyDiff(deck_change.buys + deck_change.gains, 
+            ApplyDiff(deck_change.buys + deck_change.gains,
                       deck_change.name, -1, 1)
             ApplyDiff(deck_change.trashes, deck_change.name, 0, -1)
             ApplyDiff(deck_change.returns, deck_change.name, 1, -1)

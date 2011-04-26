@@ -120,7 +120,7 @@ def main():
 
     for idx, raw_game in enumerate(scanner.Scan(games, {})):
         try:
-            if idx % 1000 == 0:
+            if not idx % 1000:
                 print idx
             game_analysis.analyze_game(Game(raw_game))
 

@@ -95,7 +95,7 @@ class DiffStat(object):
         return u'%.2f ± %.2f' % (self.Mean(), factor * self.SampleStdDev())
         
     def RenderStdevs(self):
-        if self.freq == 0:
+        if not self.freq:
             return u'-'
         return u'%.2f' % (self.Mean() / self.SampleStdDev())
 

@@ -10,7 +10,7 @@ import urllib
 
 import utils
 
-parser = utils.IncrementalDateRangeCmdLineParser()
+parser = utils.incremental_date_range_cmd_line_parser()
 
 # if the size of the game log is less than this assume we got an error page
 SMALL_FILE_SIZE = 5000 
@@ -46,7 +46,7 @@ args = parser.parse_args()
 for cur_date in utils.daterange(datetime.date(2010, 10, 15), 
                                 datetime.date.today()):
     str_date = time.strftime("%Y%m%d", cur_date.timetuple())
-    if not utils.IncludesDay(args, str_date):  
+    if not utils.includes_day(args, str_date):
         print 'skipping', str_date, 'because not in cmd line arg daterange'
         continue
     directory = str_date

@@ -1,4 +1,4 @@
-class IncrementalScanner:
+class IncrementalScanner(object):
     def __init__(self, scan_name, db):
         self.num_games = 0
         self.max_game_id = ''
@@ -16,7 +16,7 @@ class IncrementalScanner:
         return self.num_games
 
     def StatusMsg(self):
-        return 'Max game id %s, num games %s' % (self.max_game_id, 
+        return 'Max game id %s, num games %s' % (self.max_game_id,
                                                  self.num_games)
 
     def Reset(self):

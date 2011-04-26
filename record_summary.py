@@ -1,4 +1,4 @@
-class RecordSummary:
+class RecordSummary(object):
     def __init__(self):
         self.record = [0, 0, 0]
         self.win_points = 0
@@ -10,7 +10,7 @@ class RecordSummary:
         self.num_games += 1
 
     def AvgWinPoints(self):
-        if self.num_games != 0:
+        if self.num_games:
             return float(self.win_points) / self.num_games
         else:
             return 0

@@ -4,16 +4,12 @@ import os
 import pymongo
 import pprint
 
-range_test_datas = [
-    {'name': 'r1',
-     'ranges': [('20101020', '20101021'), ('20101021', '20101022')]},
-    {'name': 'r2',
-      'ranges': [('20101020', '20101022')]}
-]
+range_test_datas = [dict(name='r1', ranges=[('20101020', '20101021'), ('20101021', '20101022')]),
+                    dict(name='r2', ranges=[('20101020', '20101022')])]
 
 c = pymongo.Connection()
 
-def TestIncrementalBuild(range_test_data):
+def test_incremental_build(range_test_data):
     ranges = range_test_data['ranges']
     col_name = range_test_data['name']
     print 'testing', ranges, col_name
@@ -25,9 +21,9 @@ def TestIncrementalBuild(range_test_data):
         os.system(cmd)
 
 for range_test_data in range_test_datas:
-    TestIncrementalBuild(range_test_data)
+    test_incremental_build(range_test_data)
 
-query = {'_id': ''}
+query = {'_id':''}
 first_out = c.test[range_test_datas[0]['name']].find_one(query)
 assert first_out
 for additional_data in range_test_datas[1:]:

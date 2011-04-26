@@ -165,6 +165,7 @@ def main():
     for name in globals():
         if name.startswith('CheckMatch'):
             goal = name[len('CheckMatch'):]
+            #FIXME: this is nonobvious
             checker_output[goal]
             goal_check_funcs.append((goal, globals()[name]))
 
@@ -182,7 +183,7 @@ def main():
             output = goal_checker(game_val)
             if output:
                 for attainer in output:
-                    attainer['player'] = name_merger.NormName(
+                    attainer['player'] = name_merger.norm_name(
                         attainer['player'])
                 checker_output[goal_name].append(
                     (game_val.IsotropicUrl(), output))

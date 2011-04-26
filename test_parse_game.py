@@ -916,17 +916,17 @@ cards in supply: <span cardname="Colony" class=card-victory>Colony</span>, <span
 class ValidateNamesTest(unittest.TestCase):
     def test_keyword_in_name(self):
         decks = [{'name': 'gains a curse'}]
-        self.assertRaises(parse_game.BogusGame, parse_game.validate_names, 
+        self.assertRaises(parse_game.BogusGameError, parse_game.validate_names,
                           decks)
 
     def test_starts_with_period(self):
         decks = [{'name': '.evil'}]
-        self.assertRaises(parse_game.BogusGame, parse_game.validate_names, 
+        self.assertRaises(parse_game.BogusGameError, parse_game.validate_names,
                           decks)
 
     def test_name_is_a(self):
         decks = [{'name': 'a'}]
-        self.assertRaises(parse_game.BogusGame, parse_game.validate_names,
+        self.assertRaises(parse_game.BogusGameError, parse_game.validate_names,
                           decks)
 
 class ParseGameTest(unittest.TestCase):
@@ -1060,7 +1060,7 @@ All but one player has resigned.
 dcg wins!
 </pre></body></html>"""
     def test_parse_game_with_bogus_check(self):
-        self.assertRaises(parse_game.BogusGame, parse_game.parse_game, 
+        self.assertRaises(parse_game.BogusGameError, parse_game.parse_game,
                           ParseGameTest.EVIL_GAME_CONTENTS, True)
 
     def test_possesion_minigame(self):

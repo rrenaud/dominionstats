@@ -26,7 +26,7 @@ def analyze_plays():
         counter += 1
         for deck in game['decks']:
             analyze_deck(deck)
-        if counter % 10 == 0:
+        if not counter % 10:
             print(counter)
         if counter % 1000 == 100:
             # instant gratification!
@@ -146,6 +146,7 @@ def _relative_rate(combo, rates):
                        rates[(combo[1],)] * rates[(combo[0], combo[2])],
                        rates[(combo[2],)] * rates[(combo[0], combo[1])]
                       )
+    #FIXME: this falls through if not 1/2/3
     return rates[combo] / expected
 
 if __name__ == '__main__':

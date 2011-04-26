@@ -13,7 +13,7 @@ import pymongo
 import game
 import goals
 import query_matcher
-from name_merger import NormName
+from name_merger import norm_name
 import parse_game
 from record_summary import RecordSummary
 import datetime
@@ -36,12 +36,12 @@ urls = (
   '/(.*)', 'StaticPage'
 )
 
-class IndexPage:
+class IndexPage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")  
         return open('index.html', 'r').read()
 
-class PopularBuyPage:
+class PopularBuyPage(object):
     def GET(self):
         import count_buys
         web.header("Content-Type", "text/html; charset=utf-8")  
@@ -53,10 +53,10 @@ class PopularBuyPage:
         player_buy_summary = None
 
         if 'player' in query_dict:
-            targ_name = NormName(query_dict['player'])
+            targ_name = norm_name(query_dict['player'])
             games = map(game.Game, list(db.games.find({'players': targ_name})))
             player_buy_summary = count_buys.DeckBuyStats()
-            match_name = lambda g, name: NormName(name) == targ_name
+            match_name = lambda g, name: norm_name(name) == targ_name
             count_buys.accum_buy_stats(games, player_buy_summary, match_name)
             count_buys.add_effectiveness(player_buy_summary, stats)
 
@@ -73,17 +73,17 @@ def make_level_str(floor, ceil):
 
 def make_level_key(floor, ceil):
     if ceil < 0:
-        return (-1, ceil)
+        return -1, ceil
     elif floor > 0:
-        return (1, floor)
+        return 1, floor
     else:
-        return (0, (floor+ceil)/2)
+        return 0, (floor+ceil)/2
 
 def skill_str(mu, sigma):
     return u'%3.3f &plusmn; %3.3f' % (mu, sigma*3)
 
 
-class OpeningPage:
+class OpeningPage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")  
         query_dict = dict(urlparse.parse_qsl(web.ctx.env['QUERY_STRING']))
@@ -126,48 +126,46 @@ class OpeningPage:
             openings = [op for op in openings
                         if op['level_key'][0] != 0
                         or op['cards'] == ['Silver', 'Silver']]
-    
+
         render = web.template.render('')
         return render.openings_template(openings, card_list, selected_card)
 
-class PlayerJsonPage:
+class PlayerJsonPage(object):
     def GET(self):
         web.header("Content-Type", "text/plain; charset=utf-8")  
         query_dict = dict(urlparse.parse_qsl(web.ctx.env['QUERY_STRING']))
         target_player = query_dict['player']
-	
+
         db = utils.get_mongo_database()
         games = db.games
-        norm_target_player = NormName(target_player)
+        norm_target_player = norm_name(target_player)
         games_coll = games.find({'players': norm_target_player})
 
-	import simplejson as json
-	from pymongo import json_util
+        import simplejson as json
+        from pymongo import json_util
 
-	games_arr = list( 
-            {'game': g['decks'], 'id': g['_id']} for g in games_coll 
-            )
-	return json.dumps(games_arr, default=json_util.default)
+        games_arr = [{'game': g['decks'], 'id': g['_id']} for g in games_coll]
 
-def RenderRecordRow(label, rec):
-    return '<tr><td>%s</td><td>%s</td><td>%.3f</td></tr>\n' % (
-        label, rec.DisplayWinLossTie(), rec.AvgWinPoints())
+        return json.dumps(games_arr, default=json_util.default)
 
-def RenderRecordTable(table_name, overall_record, keyed_records, 
-                      row_label_func):
-    ret = '<div style="float: left;">'
-    ret += '<h2>%s</h2>' % table_name
-    ret += '<table border=1>'
-    ret += '<tr><td></td><td>Record</td><td>Average Win Points</td></tr>\n'
-    ret += RenderRecordRow('All games', overall_record)
-    for record_row_cond in sorted(keyed_records.keys()):
-        ret += RenderRecordRow(row_label_func(record_row_cond),
-                               keyed_records[record_row_cond])
-    ret += '</table>'
-    ret += '</div>'
-    return ret
+def render_record_row(label, rec):
+    return '<tr><td>%s</td><td>%s</td><td>%.3f</td></tr>\n' % (label, rec.DisplayWinLossTie(), rec.AvgWinPoints())
 
-class PlayerPage:
+def render_record_table(table_name, overall_record, keyed_records, row_label_func):
+    #TODO: this is a good target for a template like jinja2
+    table = ('<div style="float: left;">',
+             '<h2>%s</h2>' % table_name,
+             '<table border=1>',
+             '<tr><td></td><td>Record</td><td>Average Win Points</td></tr>\n',
+             render_record_row('All games', overall_record),
+             ''.join(render_record_row(row_label_func(record_row_cond), keyed_records[record_row_cond])
+                     for record_row_cond in sorted(keyed_records.keys())),
+             '</table>',
+             '</div>')
+
+    return ''.join(table)
+
+class PlayerPage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")  
 
@@ -176,7 +174,7 @@ class PlayerPage:
 
         db = utils.get_mongo_database()
         games = db.games
-        norm_target_player = NormName(target_player)
+        norm_target_player = norm_name(target_player)
         games_coll = games.find({'players': norm_target_player})
 
         keyed_by_opp = collections.defaultdict(list)
@@ -187,22 +185,22 @@ class PlayerPage:
         aliases = set()
 
         overall_record = RecordSummary()
-        rec_by_game_size   = collections.defaultdict(RecordSummary)
-	rec_by_date        = collections.defaultdict(RecordSummary)
+        rec_by_game_size = collections.defaultdict(RecordSummary)
+        rec_by_date = collections.defaultdict(RecordSummary)
         rec_by_turn_order =  collections.defaultdict(RecordSummary)
 
-	date_buckets = ( 1, 3, 5, 10 )
+        date_buckets = ( 1, 3, 5, 10 )
         for g in games_coll:
             game_val = game.Game(g)
             if game_val.DubiousQuality():
                 continue
             all_player_names = game_val.AllPlayerNames()
-            norm_names = map(NormName, all_player_names)
+            norm_names = map(norm_name, all_player_names)
             if len(set(norm_names)) != len(all_player_names):
                 continue
             target_player_cur_name_cand = [
                 n for n in all_player_names
-                if NormName(n) == norm_target_player]
+                if norm_name(n) == norm_target_player]
             if len(target_player_cur_name_cand) != 1:
                 continue
             game_list.append(game_val)
@@ -210,7 +208,7 @@ class PlayerPage:
             aliases.add(target_player_cur_name)
             for p in game_val.PlayerDecks():
                 if p.Name() != target_player_cur_name:
-                    other_norm_name = NormName(p.Name())
+                    other_norm_name = norm_name(p.Name())
                     keyed_by_opp[other_norm_name].append(
                         (p.Name(), target_player_cur_name, game_val))
                     real_name_usage[other_norm_name][p.Name()] += 1
@@ -221,42 +219,40 @@ class PlayerPage:
                     rec_by_game_size[game_len].RecordResult(res, p.WinPoints())
                     rec_by_turn_order[p.TurnOrder()].RecordResult(
                         res,  p.WinPoints())
-		    for delta in date_buckets:
-                        delta_padded_date = (
-                            game_val.Date() + datetime.timedelta(days = delta)
-                            ).date()
+                    for delta in date_buckets:
+                        delta_padded_date = (game_val.Date() + datetime.timedelta(days = delta)).date()
                         today = datetime.datetime.now().date()
-		        if (delta_padded_date >= today):
-			    rec_by_date[delta].RecordResult(res, p.WinPoints())
+                        if delta_padded_date >= today:
+                            rec_by_date[delta].RecordResult(res, p.WinPoints())
 
         keyed_by_opp_list = keyed_by_opp.items()
         keyed_by_opp_list.sort(key = lambda x: (-len(x[1]), x[0]))
-
+        #TODO: a good choice for a template like jinja2
         ret = ('<html><head><title>CouncilRoom.com: Dominion Stats: '
                '%s</title></head>\n' % target_player)
         ret += '<body><A HREF="/">Back to CouncilRoom.com</A><BR><BR>'
 
-	ret += """
-	    Player: <form action='/player' method='get'>
-		   <input type="text" name="player" style="width:100px;" />
-		   <input type="submit" value="Submit" />
-		</form>
-		"""
+        ret += """
+               Player: <form action='/player' method='get'>
+               <input type="text" name="player" style="width:100px;" />
+               <input type="submit" value="Submit" />
+               </form>
+               """
 
         if len(aliases) > 1:
             ret += 'Player aliases: ' + ', '.join(aliases) + '<br>\n'
 
 
-        ret += RenderRecordTable('Record by game size', overall_record,
+        ret += render_record_table('Record by game size', overall_record,
                                  rec_by_game_size,
                                  lambda game_size: '%d players' % game_size)
-        ret += RenderRecordTable('Recent Record', overall_record, rec_by_date,
+        ret += render_record_table('Recent Record', overall_record, rec_by_date,
                                  lambda num_days: 'Last %d days' % num_days)
-        ret += RenderRecordTable('Record by turn order', overall_record,
+        ret += render_record_table('Record by turn order', overall_record,
                                  rec_by_turn_order, 
                                  lambda pos: 'Table position %d' % pos)
 
-	ret += '<div style="clear: both;">&nbsp;</div>'
+        ret += '<div style="clear: both;">&nbsp;</div>'
 
         ret += goals.MaybeRenderGoals(db, norm_target_player)
 
@@ -269,7 +265,7 @@ class PlayerPage:
 
         ret += ('<A HREF="/search_result?p1_name=%s">(See more)</A>' % 
                 target_player)
-        
+
         ret += '<h2>Record by opponent</h2>'
         ret += '<table border=1>'
         ret += '<tr><td>Opponent</td><td>Record</td></tr>'
@@ -279,10 +275,10 @@ class PlayerPage:
                 record[g.WinLossTie(targ_player_cur_name, opp_name)] += 1
             ret += '<tr>'
 
-            opp_cannon_name = max(  # Get most freq used name for opponent
-                real_name_usage[opp_norm_name].iteritems(),
-                key=lambda x: x[1])[0]
-            
+            # Get most freq used name for opponent
+            #TODO: lambdas can be switched to itemgetters
+            opp_cannon_name = max(real_name_usage[opp_norm_name].iteritems(), key=lambda x: x[1])[0]
+
             row_span = (len(game_list) - 1) / 10 + 1
             ret += '<td rowspan=%d>%s</td>' % (
                 row_span, game.PlayerDeck.PlayerLink(opp_cannon_name))
@@ -298,7 +294,7 @@ class PlayerPage:
         ret += '</table></body></html>'
         return ret
 
-class GamePage:
+class GamePage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")  
         query_dict = dict(urlparse.parse_qsl(web.ctx.env['QUERY_STRING']))
@@ -311,7 +307,7 @@ class GamePage:
                         'rrenaud@gmail.com!</b>')
         try:
             return parse_game.annotate_game(contents, game_id, debug)
-        except parse_game.BogusGame, b:
+        except parse_game.BogusGameError, b:
             return contents.replace('<body>', body_err_msg + ': foo? ' + 
                                     str(b))
         except Exception, e:
@@ -324,12 +320,12 @@ class GamePage:
                                     output.getvalue().replace('\n', '<br>').
                                     replace(' ', '&nbsp'))
 
-class SearchQueryPage:
+class SearchQueryPage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")
         return open('search_query.html', 'r').read()
 
-class SearchResultPage:
+class SearchResultPage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")
         query_dict = dict(urlparse.parse_qsl(web.ctx.env['QUERY_STRING']))
@@ -338,9 +334,9 @@ class SearchResultPage:
         games = db.games
 
         ret = '<html><head><title>Game Search Results</title></head><body>'
-        
+
         ret += '<a href="/search_query">Back to search query page</a><BR><BR>'
-        
+
         matcher = query_matcher.QueryMatcher(**query_dict)
         found_any = False
         for idx, game_match in enumerate(matcher.QueryDB(games)):
@@ -348,11 +344,11 @@ class SearchResultPage:
             ret += game_match.DisplayGameSnippet() + '<br>'
         if not found_any:
             ret += 'Your search returned no matches<br>'
-            
+
         ret += '<a href="/search_query">Back to search query page</a>'
         return ret
 
-class WinRateDiffAccumPage:
+class WinRateDiffAccumPage(object):
     def GET(self):
         render = web.template.render('')
         return render.win_graph_template(
@@ -363,7 +359,7 @@ class WinRateDiffAccumPage:
             'WeightProportionalToAccumDiff'
             )
 
-class WinWeightedAccumTurnPage:
+class WinWeightedAccumTurnPage(object):
     def GET(self):
         render = web.template.render('')
         return render.win_graph_template(
@@ -374,7 +370,7 @@ class WinWeightedAccumTurnPage:
             'WeightAllTurnsSame'
             )
 
-class GoalsPage:
+class GoalsPage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")
         db = utils.get_mongo_database()
@@ -412,18 +408,18 @@ class GoalsPage:
         player_scores.sort(key = lambda x: -x[1])
         for player, score in player_scores[:10]:
             ret += player + ' ' + '%.3f' % score + '<br>'
-        
+
         return ret
 
 
-class StaticPage:
+class StaticPage(object):
     def GET(self, arg):
         import os.path
         if os.path.exists( arg ):
             return open(arg, 'r').read()
         else:
             raise web.notfound()
-    
+
 def notfound():
     return web.notfound( "This page is not found.  Blame it on rrenaud." )
 

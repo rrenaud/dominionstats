@@ -10,7 +10,7 @@ def ToPrimitive(val):
     assert type(val) in PRIMITIVES, val
     return val
 
-class PrimitiveConversion:
+class PrimitiveConversion(object):
     def ToPrimitiveObject(self):
         ret = {}
         for k, v in self.__dict__.iteritems():

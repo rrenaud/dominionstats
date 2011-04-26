@@ -8,7 +8,7 @@ import sys
 import argparse
 import utils
 
-parser = utils.IncrementalDateRangeCmdLineParser()
+parser = utils.incremental_date_range_cmd_line_parser()
 
 def main():
     args = parser.parse_args()
@@ -22,7 +22,7 @@ def main():
     for fn in data_files_to_load:
         yyyymmdd = fn[:8]
         print yyyymmdd
-        if not utils.IncludesDay(args, yyyymmdd):
+        if not utils.includes_day(args, yyyymmdd):
             print 'skipping', fn, 'because not in range'
             continue
 

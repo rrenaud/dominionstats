@@ -63,7 +63,7 @@ KW_WHICH_IS_WORTH = ' which is worth +$'
 KW_WITH_A = ' with a'
 KEYWORDS = [locals()[w] for w in dict(locals()) if w.startswith('KW_')]
 
-class BogusGame(Exception):
+class BogusGameError(Exception):
     """ Exception for a degenerate game that cannot or should not be parsed."""
 
     def __init__(self, reason):
@@ -86,11 +86,11 @@ def capture_cards(line):
     card_sections = SPLIT_COMMA_AND_RE.split(line)
     for sect in card_sections:
         split_at_span = sect.split('<span')
-        if len(split_at_span) == 0:
+        if not split_at_span:
             continue
         first = split_at_span[0]
         split_first = first.split()
-        if len(split_first) == 0:
+        if not split_first:
             mult = 1
         else:
             mult = _as_int_or_1(split_first[-1])
@@ -136,7 +136,7 @@ def associate_game_with_norm_names(game_dict):
     """ Fill players field in game_dict with list of normed player names."""
     game_dict['players'] = []
     for player_deck in game_dict['decks']:
-        normed_name = name_merger.NormName(player_deck['name'])
+        normed_name = name_merger.norm_name(player_deck['name'])
         game_dict['players'].append(normed_name)
 
 def associate_turns_with_owner(game_dict, turns):
@@ -161,7 +161,7 @@ def associate_turns_with_owner(game_dict, turns):
         del turn['name']
 
     if order_ct != len(game_dict['decks']):
-        raise BogusGame('Did not find turns for all players')
+        raise BogusGameError('Did not find turns for all players')
 
 ONLY_NUMBERS_RE = re.compile('^\d+$')
 
@@ -173,27 +173,27 @@ def validate_names(decks):
     for deck in decks:
         name = deck['name']
         if name in used_names:
-            raise BogusGame('Duplicate name %s' % name)
+            raise BogusGameError('Duplicate name %s' % name)
         used_names.add(name)
 
         if name in ['a', 'and']:
-            raise BogusGame("annoying name " + name)
+            raise BogusGameError("annoying name " + name)
         if '---' in name:
-            raise BogusGame('--- in name ' + name)
+            raise BogusGameError('--- in name ' + name)
         
         if ONLY_NUMBERS_RE.match(name):
-            raise BogusGame('name contains only numbers ' + name)
+            raise BogusGameError('name contains only numbers ' + name)
 
         if name[0] == '.':
-            raise BogusGame('name %s starts with period' % name)
+            raise BogusGameError('name %s starts with period' % name)
         for kword in KEYWORDS:
             if kword.lstrip() in name or kword.rstrip() in name:
-                raise BogusGame('name %s contains keyword %s' % (name, kword))
+                raise BogusGameError('name %s contains keyword %s' % (name, kword))
 
     if len(used_names) != len(decks):
-        raise BogusGame('not everyone took a turn?')
+        raise BogusGameError('not everyone took a turn?')
     if len(decks) <= 1:
-        raise BogusGame('only one player')
+        raise BogusGameError('only one player')
 
 def canonicalize_names(turns_str, player_names):
     """ Return a new string in which all player names are replaced by
@@ -256,7 +256,7 @@ def parse_game(game_str, dubious_check = False):
     assign_win_points(game_dict)
 
     if dubious_check and Game(game_dict).DubiousQuality():
-        raise BogusGame('Dubious Quality')
+        raise BogusGameError('Dubious Quality')
 
     return game_dict
 
@@ -350,6 +350,7 @@ def parse_deck(deck_str):
                 raise exception
             card_quant = int(card_blob.split()[0])
             deck_comp[card_name] = card_quant
+    #FIXME: deck_comp is undefined if there's no vp_list
     return {'name': name, 'points': points, 'resigned': resigned,
             'deck': deck_comp, 'vp_tokens': vp_tokens}
 
@@ -404,7 +405,7 @@ def count_money(plays):
 
 PLAYER_IND_RE = re.compile('player(?P<num>\d+)')
 
-class PlayerTracker:
+class PlayerTracker(object):
     ''' The player tracker is used to keep track of the active player being
     modified by the gain and trashes actions in a sequence of isotropic
     game lines. '''
@@ -425,7 +426,7 @@ class PlayerTracker:
 
         if len(mentioned_players) > 0:
             self.player_stack[-1] = mentioned_players[-1]
-            if self.orig_player == None:
+            if self.orig_player is None:
                 self.orig_player = mentioned_players[-1]
 
         return self.player_stack[-1]
@@ -665,7 +666,7 @@ def outer_parse_game(filename):
         parsed = parse_game(contents, dubious_check = True)
         parsed['_id'] = filename.split('/')[-1]
         return parsed
-    except BogusGame, bogus_game_exception:
+    except BogusGameError, bogus_game_exception:
         # print 'skipped', filename, 'because', bogus_game_exception.reason
         return None
 
@@ -791,12 +792,12 @@ def main():
     #print AnnotateGame(codecs.open(fn, 'r', encoding='utf-8').read()).encode(
     #    'utf-8')
     #return
-    args = utils.IncrementalDateRangeCmdLineParser().parse_args()
+    args = utils.incremental_date_range_cmd_line_parser().parse_args()
     print args
     days = os.listdir('static/scrape_data')
     days.sort()
     for year_month_day in days:
-        if not utils.IncludesDay(args, year_month_day):
+        if not utils.includes_day(args, year_month_day):
             print year_month_day, 'not in date range, skipping'
             continue
             

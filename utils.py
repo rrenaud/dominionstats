@@ -11,13 +11,14 @@ def get_mongo_connection():
 
    try:
       config = ConfigParser.ConfigParser()
-      config.read( 'conf.ini' )
+      config.read('conf.ini')
 
-      mongo_connection = config.get( 'mongo', 'connection' )
+      mongo_connection = config.get('mongo', 'connection')
+   #FIXME: this is too broad
    except:
       pass
-	
-   return pymongo.Connection( mongo_connection )
+
+   return pymongo.Connection(mongo_connection)
 
 # Should I read once somewhere and cache?  I guess when
 #   we have more config things.
@@ -27,12 +28,13 @@ def get_mongo_database():
    db = None
    try:
       config = ConfigParser.ConfigParser()
-      config.read( 'conf.ini' )
+      config.read('conf.ini')
 
-      db = connection[ config.get( 'mongo', 'database' ) ]
+      db = connection[config.get('mongo', 'database')]
+   #FIXME: this is too broad
    except:
       # Might still err if test does not exist
-      db = connection[ 'test' ]
+      db = connection['test']
 
    return db
 
@@ -70,13 +72,13 @@ def incremental_max_parser():
    parser.add_argument('--max_games', default=-1, type=int)
    return parser
 
-def IncrementalDateRangeCmdLineParser():
+def incremental_date_range_cmd_line_parser():
     parser = incremental_parser()
     # 20101015 is the first day with standard turn labels
     parser.add_argument('--startdate', default='20101015')
     parser.add_argument('--enddate', default='99999999')
     return parser
 
-def IncludesDay(args, str_yyyymmdd):
-    assert len(str_yyyymmdd) == 8, '%s not 8 chars' % (str_yyyymmdd)
+def includes_day(args, str_yyyymmdd):
+    assert len(str_yyyymmdd) == 8, '%s not 8 chars' % str_yyyymmdd
     return args.startdate <= str_yyyymmdd <= args.enddate 

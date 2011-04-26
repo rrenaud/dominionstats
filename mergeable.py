@@ -1,6 +1,6 @@
 
 # I't s quite possible that this is too abstract/clever.
-class MergeableObjectImpl:
+class MergeableObjectImpl(object):
     def Merge(self, other):
         access_func = self._AccessFunc
         self_dict = access_func(self)
