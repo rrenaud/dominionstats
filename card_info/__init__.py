@@ -1,7 +1,7 @@
 import csv
 import os
 
-_cardlist_reader = csv.DictReader(open('card_list.csv'))
+_cardlist_reader = csv.DictReader(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'card_list.csv')))
 _to_singular = {}
 _to_plural = {}
 _card_index = {}
