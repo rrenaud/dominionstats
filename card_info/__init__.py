@@ -42,7 +42,7 @@ def IsTreasure(singular_card_name):
 def Cost(singular_card_name):
     return _card_info_rows[singular_card_name]['Cost']
 
-# Returns value of card name if the value is unambigous.
+# Returns value of card name if the value is unambiguous.
 def MoneyValue(card_name):
     try:
         return int(_card_info_rows[card_name]['Coins'])
