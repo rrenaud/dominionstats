@@ -30,7 +30,7 @@ class CardStatistic(PrimitiveConversion):
             number of a given card.  Card advantages are rounded relative
             to the average number gained/bought by other players through the
             game.
-"""
+    """
     def __init__(self):
         self.available = 0
         self.win_any_accum = MeanVarStat()
@@ -57,8 +57,7 @@ class GamesAnalysis(PrimitiveConversion):
         for card in game.Supply() + card_info.EVERY_SET_CARDS:
             self.card_stats[card].available += len(game.PlayerDecks())
 
-        accumed_by_player = collections.defaultdict(
-            lambda : collections.defaultdict(int))
+        accumed_by_player = collections.defaultdict(lambda : collections.defaultdict(int))
         for turn in game.Turns():
             deck = turn.Player()
             turnno = turn.TurnNo()
