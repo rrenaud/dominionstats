@@ -1,6 +1,6 @@
 import pymongo
 from collections import defaultdict
-
+#module-level things like this can break
 c = pymongo.Connection()
 games = c.test.games
 

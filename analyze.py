@@ -139,7 +139,7 @@ def main():
     output_file = open(output_file_name, 'w')
     output_file.write('var all_card_data = ')
 
-    json.dump(game_analysis.ToPrimitiveObject(), output_file)
+    json.dump(game_analysis.to_primitive_object(), output_file)
     print scanner.StatusMsg()
     scanner.Save()
 

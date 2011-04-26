@@ -295,8 +295,8 @@ class GameState(object):
         return self.player_decks[player]
 
     def EncodeGameState(self):
-        return {'supply': self.supply.ToPrimitiveObject(),
-                'player_decks': self.player_decks.ToPrimitiveObject()}
+        return {'supply': self.supply.to_primitive_object(),
+                'player_decks': self.player_decks.to_primitive_object()}
 
     def _TakeTurn(self, turn):
         def ApplyDiff(cards, name, supply_dir, deck_dir):

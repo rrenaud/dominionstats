@@ -14,9 +14,9 @@ class SimpleConversion(unittest.TestCase):
         a.foo = 3
         a.bar = 'baz'
 
-        prim_a = a.ToPrimitiveObject()
+        prim_a = a.to_primitive_object()
         returned_a = A()
-        returned_a.FromPrimitiveObject(prim_a)
+        returned_a.from_primitive_object(prim_a)
 
         self.assertEquals(returned_a.foo, a.foo)
         self.assertEquals(returned_a.bar, a.bar)
@@ -26,9 +26,9 @@ class ConvertibleDefaultDictTest(unittest.TestCase):
         a = primitive_util.ConvertibleDefaultDict(str)
         a['foo'] = 3
         
-        prim_a = a.ToPrimitiveObject()
+        prim_a = a.to_primitive_object()
         returned_a = primitive_util.ConvertibleDefaultDict(str)
-        returned_a.FromPrimitiveObject(prim_a)
+        returned_a.from_primitive_object(prim_a)
         self.assertEquals(a, returned_a)
 
     def testNestedCDD(self):
@@ -36,10 +36,10 @@ class ConvertibleDefaultDictTest(unittest.TestCase):
         x = CDD(value_type = lambda: CDD(value_type = int))
         x['foo']['bar'] = 2
         
-        prim_x = x.ToPrimitiveObject()
+        prim_x = x.to_primitive_object()
         self.assertEquals(prim_x, {'foo': {'bar': 2}})
         returned_x = CDD(value_type = lambda: CDD(value_type = int))
-        returned_x.FromPrimitiveObject(prim_x)
+        returned_x.from_primitive_object(prim_x)
         self.assertEquals(x, returned_x)
 
 class NestedClassPrimTest(unittest.TestCase):
@@ -56,12 +56,12 @@ class NestedClassPrimTest(unittest.TestCase):
         a.d['1'].foo = 1
         a.d['2'].foo = 4
 
-        prim_a = a.ToPrimitiveObject()
+        prim_a = a.to_primitive_object()
         returned_a = A()
-        returned_a.FromPrimitiveObject(prim_a)
+        returned_a.from_primitive_object(prim_a)
 
         self.assertEquals(a.d['1'].foo, returned_a.d['1'].foo)
-        again_prim_a = returned_a.ToPrimitiveObject()
+        again_prim_a = returned_a.to_primitive_object()
         self.assertEquals(prim_a, again_prim_a)
 
 if __name__ == '__main__':

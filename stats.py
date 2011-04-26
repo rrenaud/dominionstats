@@ -63,10 +63,10 @@ class MeanVarStat(primitive_util.PrimitiveConversion,
                 self.sum == o.sum and
                 self.sum_sq == o.sum_sq)
 
-    def ToPrimitiveObject(self):
+    def to_primitive_object(self):
         return [self.freq, self.sum, self.sum_sq]
 
-    def FromPrimitiveObject(self, obj):
+    def from_primitive_object(self, obj):
         if type(obj) == list:
             self.freq, self.sum, self.sum_sq = obj
         elif type(obj) == dict:

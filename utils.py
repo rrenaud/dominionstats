@@ -41,10 +41,10 @@ def get_mongo_database():
 def read_object_from_db(obj, collection, _id):
    prim = collection.find_one({'_id': _id})
    if prim:
-      obj.FromPrimitiveObject(prim)
+      obj.from_primitive_object(prim)
 
 def write_object_to_db(obj, collection, _id):
-    prim = obj.ToPrimitiveObject()
+    prim = obj.to_primitive_object()
     prim['_id'] = _id
     collection.save(prim)
 
