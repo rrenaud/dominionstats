@@ -11,7 +11,7 @@ def to_primitive(val):
     return val
 
 #TODO: this is depending on implicit old-style class behavior
-class PrimitiveConversion:
+class PrimitiveConversion(object):
     def to_primitive_object(self):
         ret = {}
         for k, v in self.__dict__.iteritems():
@@ -33,18 +33,15 @@ class PrimitiveConversion:
                 self.__dict__[k] = obj[k]
 
 
-class ConvertibleDefaultDict(PrimitiveConversion):
+class ConvertibleDefaultDict(collections.defaultdict, PrimitiveConversion):
     def __init__(self, value_type, key_type = str):
+        collections.defaultdict.__init__(self, value_type)
         self.value_type = value_type
         self.key_type = key_type
-        self.backing_dict = collections.defaultdict(value_type)
-
-    def __getattr__(self, key):
-        return getattr(self.backing_dict, key)
 
     def to_primitive_object(self):
         ret = {}
-        for key, val in self.backing_dict.iteritems():
+        for key, val in self.iteritems():
             if type(key) == unicode:
                 key = key.encode('utf-8')
             else:
@@ -60,10 +57,7 @@ class ConvertibleDefaultDict(PrimitiveConversion):
                 val.from_primitive_object(v)
             else: 
                 val = v
-            self.backing_dict[self.key_type(k)] = val
-
-    def __eq__(self, obj):
-        return self.backing_dict == obj.backing_dict
+            self[self.key_type(k)] = val
 
 if __name__ == '__main__':
     import pymongo
