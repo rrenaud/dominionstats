@@ -37,20 +37,20 @@ import incremental_scanner
 #             if big_vp_cards >= 3 and total_vp_cards >= 8:
 #                 return [last_turn.Player().Name()]
 #     return []
-
+#FIXME: this is still a Work in Progress unfortunately
 def CheckMatchBOM(g):
     ret = []
-    cards_per_player = g.CardsAccumulatedPerPlayer()
+    cards_per_player = g.cards_accumalated_per_player()
     for player, card_list in cards_per_player.iteritems():
         treasures = []
         bad = False
-        if g.GetPlayerDeck(player).Resigned():
+        if g.get_player_deck(player).Resigned():
             continue
         for card in card_list:
-            if card_info.IsAction(card):
+            if card_info.is_action(card):
                 bad = True
                 break
-            if card_info.IsTreasure(card):
+            if card_info.is_treasure(card):
                 treasures.append(card)
         if not bad:
             ret.append({'player': player,
@@ -64,17 +64,17 @@ def CheckMatchBOMMinator(g):
     ret = []
     for match_dict in cands:
         player = match_dict['player']
-        if g.GetPlayerDeck(player).WinPoints() > 1.0:
+        if g.get_player_deck(player).WinPoints() > 1.0:
             ret.append({'player': player, 
                         'reason' : match_dict['reason'] + ' and won'
                         })
     return ret
 
 def CheckMatchNegativeSum(g):
-    if g.AnyResigned():
+    if g.any_resigned():
         return []
     ret = []
-    for player in g.PlayerDecks():
+    for player in g.get_player_decks():
         if player.WinPoints() > 1.0 and player.Points() < 0:
             ret.append({'player': player.Name(),
                         'reason': 'Won with a negative score, %d points' % (
@@ -82,13 +82,13 @@ def CheckMatchNegativeSum(g):
     return ret
 
 def CheckMatchPileDriver(g):
-    accumed_per_player = g.CardsAccumulatedPerPlayer()
+    accumed_per_player = g.cards_accumalated_per_player()
     ret = []
     for player, card_dict in accumed_per_player.iteritems():
-        if g.GetPlayerDeck(player).WinPoints() > 1.0:
+        if g.get_player_deck(player).WinPoints() > 1.0:
             for card, quant in card_dict.iteritems():
-                if quant == card_info.NumCopiesPerGame(card, 
-                                                       len(g.PlayerDecks())):
+                if quant == card_info.num_copies_per_game(card,
+                                                       len(g.get_player_decks())):
                     ret.append(
                         {'player': player, 
                          'reason': 'Bought all %d copies of %s' % (
@@ -97,12 +97,12 @@ def CheckMatchPileDriver(g):
     return ret
 
 def CheckMatchOneTrickPony(g):
-    accumed_per_player = g.CardsAccumulatedPerPlayer()
+    accumed_per_player = g.cards_accumalated_per_player()
     ret = []
     for player, card_dict in accumed_per_player.iteritems():
-        if g.GetPlayerDeck(player).WinPoints() > 1.0:
+        if g.get_player_deck(player).WinPoints() > 1.0:
             actions_quants = [(c, q) for c, q in card_dict.iteritems() if
-                              card_info.IsAction(c)]
+                              card_info.is_action(c)]
             if len(actions_quants) != 1:
                 continue
             if actions_quants[0][1] < 7:
@@ -110,7 +110,7 @@ def CheckMatchOneTrickPony(g):
             action, quant = actions_quants[0]
             ret.append({'player': player,
                         'reason': 'Bought no action other than %d %s' % (
-                        quant, card_info.Pluralize(action, quant))})
+                        quant, card_info.pluralize(action, quant))})
     return ret
             
                 
@@ -146,7 +146,7 @@ def MaybeRenderGoals(db, norm_target_player):
                         ret += (
                             '<li style="float: left;">'
                             '%s<img src="%s" title="%s%s"></a><br>' % 
-                            (game.Game.CouncilRoomOpenLinkFromId(game_id),
+                            (game.Game.get_councilroom_link_from_id(game_id),
                              img_loc, goal_name, reason))
                         if freq > 1:
                             ret += '%d times\n' % freq
@@ -172,9 +172,9 @@ def main():
     output_collection.ensure_index('attainers.player')
     output_collection.ensure_index('goal')
     scanner = incremental_scanner.IncrementalScanner('goals', c.test)
-    print 'starting with id', scanner.MaxGameId(), 'and num games', \
-        scanner.NumGames()
-    for idx, g in enumerate(scanner.Scan(games_collection, {})):
+    print 'starting with id', scanner.get_max_game_id(), 'and num games', \
+        scanner.get_num_games()
+    for idx, g in enumerate(scanner.scan(games_collection, {})):
         if idx % 1000 == 0:
             print idx
         total_checked += 1
@@ -186,15 +186,15 @@ def main():
                     attainer['player'] = name_merger.norm_name(
                         attainer['player'])
                 checker_output[goal_name].append(
-                    (game_val.IsotropicUrl(), output))
-                mongo_val = {'_id': game_val.Id(),
+                    (game_val.isotropic_url(), output))
+                mongo_val = {'_id': game_val.get_id(),
                              'goal': goal_name,
                              'attainers': output}
                 output_collection.save(mongo_val)
 
-    print 'ending with id', scanner.MaxGameId(), 'and num games', \
-        scanner.NumGames()
-    scanner.Save()
+    print 'ending with id', scanner.get_max_game_id(), 'and num games', \
+        scanner.get_num_games()
+    scanner.save()
 
     for goal_name, output in checker_output.iteritems():
         print goal_name, len(output)

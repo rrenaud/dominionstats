@@ -113,9 +113,9 @@ class OpeningPage(object):
             opening['level_str'] = make_level_str(floor, ceil)
             opening['skill_str'] = skill_str(opening['mu'], opening['sigma'])
             opening['cards'].sort()
-            opening['cards'].sort(key=lambda card: (card_info.Cost(card)),
+            opening['cards'].sort(key=lambda card: (card_info.cost(card)),
                 reverse=True)
-            costs = [str(card_info.Cost(card)) for card in opening['cards']]
+            costs = [str(card_info.cost(card)) for card in opening['cards']]
             while len(costs) < 2:
                 costs.append('-')
             opening['cost'] = '/'.join(costs)
@@ -149,16 +149,23 @@ class PlayerJsonPage(object):
         return json.dumps(games_arr, default=json_util.default)
 
 def render_record_row(label, rec):
-    return '<tr><td>%s</td><td>%s</td><td>%.3f</td></tr>\n' % (label, rec.DisplayWinLossTie(), rec.AvgWinPoints())
 
-def render_record_table(table_name, overall_record, keyed_records, row_label_func):
+    _row = ('<tr><td>%s</td>' % label,
+            '<td>%s</td>' % rec.display_win_loss_tie(),
+            '<td>%.3f</td></tr>\n' % rec.average_win_points())
+
+    return ''.join(_row)
+
+def render_record_table(table_name, overall_record,
+                        keyed_records, row_label_func):
     #TODO: this is a good target for a template like jinja2
     table = ('<div style="float: left;">',
              '<h2>%s</h2>' % table_name,
              '<table border=1>',
              '<tr><td></td><td>Record</td><td>Average Win Points</td></tr>\n',
              render_record_row('All games', overall_record),
-             ''.join(render_record_row(row_label_func(record_row_cond), keyed_records[record_row_cond])
+             ''.join(render_record_row(row_label_func(record_row_cond),
+                                       keyed_records[record_row_cond])
                      for record_row_cond in sorted(keyed_records.keys())),
              '</table>',
              '</div>')
@@ -192,9 +199,9 @@ class PlayerPage(object):
         date_buckets = ( 1, 3, 5, 10 )
         for g in games_coll:
             game_val = game.Game(g)
-            if game_val.DubiousQuality():
+            if game_val.dubious_quality():
                 continue
-            all_player_names = game_val.AllPlayerNames()
+            all_player_names = game_val.all_player_names()
             norm_names = map(norm_name, all_player_names)
             if len(set(norm_names)) != len(all_player_names):
                 continue
@@ -206,24 +213,31 @@ class PlayerPage(object):
             game_list.append(game_val)
             target_player_cur_name = target_player_cur_name_cand[0]
             aliases.add(target_player_cur_name)
-            for p in game_val.PlayerDecks():
+            for p in game_val.get_player_decks():
                 if p.Name() != target_player_cur_name:
                     other_norm_name = norm_name(p.Name())
                     keyed_by_opp[other_norm_name].append(
                         (p.Name(), target_player_cur_name, game_val))
                     real_name_usage[other_norm_name][p.Name()] += 1
                 else:
-                    res = game_val.WinLossTie(p.Name())
-                    overall_record.RecordResult(res, p.WinPoints())
-                    game_len = len(game_val.PlayerDecks())
-                    rec_by_game_size[game_len].RecordResult(res, p.WinPoints())
-                    rec_by_turn_order[p.TurnOrder()].RecordResult(
-                        res,  p.WinPoints())
+                    #this is getting fidgety about 80 chars, which sometimes
+                    #can mean that it's getting too nested and could use a
+                    #rethink
+                    res = game_val.win_loss_tie(p.Name())
+                    overall_record.record_result(res, p.WinPoints())
+                    game_len = len(game_val.get_player_decks())
+                    rec_by_game_size[game_len].record_result(res,
+                                                             p.WinPoints())
+                    _ord = p.TurnOrder()
+                    rec_by_turn_order[_ord].record_result(res, p.WinPoints())
                     for delta in date_buckets:
-                        delta_padded_date = (game_val.Date() + datetime.timedelta(days = delta)).date()
+                        _padded = (game_val.date() +
+                                   datetime.timedelta(days = delta))
+                        delta_padded_date = _padded.date()
                         today = datetime.datetime.now().date()
                         if delta_padded_date >= today:
-                            rec_by_date[delta].RecordResult(res, p.WinPoints())
+                            rec_by_date[delta].record_result(res,
+                                                             p.WinPoints())
 
         keyed_by_opp_list = keyed_by_opp.items()
         keyed_by_opp_list.sort(key = lambda x: (-len(x[1]), x[0]))
@@ -244,23 +258,24 @@ class PlayerPage(object):
 
 
         ret += render_record_table('Record by game size', overall_record,
-                                 rec_by_game_size,
-                                 lambda game_size: '%d players' % game_size)
-        ret += render_record_table('Recent Record', overall_record, rec_by_date,
-                                 lambda num_days: 'Last %d days' % num_days)
+                                   rec_by_game_size,
+                                   lambda game_size: '%d players' % game_size)
+        ret += render_record_table('Recent Record', overall_record,
+                                   rec_by_date,
+                                   lambda num_days: 'Last %d days' % num_days)
         ret += render_record_table('Record by turn order', overall_record,
-                                 rec_by_turn_order, 
-                                 lambda pos: 'Table position %d' % pos)
+                                   rec_by_turn_order,
+                                   lambda pos: 'Table position %d' % pos)
 
         ret += '<div style="clear: both;">&nbsp;</div>'
 
         ret += goals.MaybeRenderGoals(db, norm_target_player)
 
         ret += '<h2>Most recent games</h2>\n'
-        game_list.sort(key = game.Game.Id, reverse = True)
+        game_list.sort(key = game.Game.get_id, reverse = True)
         qm = query_matcher.QueryMatcher(p1_name=target_player)
         for g in game_list[:3]:
-            ret += (query_matcher.GameMatcher(g, qm).DisplayGameSnippet() + 
+            ret += (query_matcher.GameMatcher(g, qm).display_game_snippet() +
                     '<br>')
 
         ret += ('<A HREF="/search_result?p1_name=%s">(See more)</A>' % 
@@ -271,25 +286,26 @@ class PlayerPage(object):
         ret += '<tr><td>Opponent</td><td>Record</td></tr>'
         for opp_norm_name, game_list in keyed_by_opp_list:
             record = [0, 0, 0]
-            for opp_name, targ_player_cur_name, g in game_list:
-                record[g.WinLossTie(targ_player_cur_name, opp_name)] += 1
+            for opp_name, tgt_player_curname, g in game_list:
+                record[g.win_loss_tie(tgt_player_curname, opp_name)] += 1
             ret += '<tr>'
 
             # Get most freq used name for opponent
             #TODO: lambdas can be switched to itemgetters
-            opp_cannon_name = max(real_name_usage[opp_norm_name].iteritems(), key=lambda x: x[1])[0]
+            opp_cannon_name = max(real_name_usage[opp_norm_name].iteritems(),
+                                  key=lambda x: x[1])[0]
 
             row_span = (len(game_list) - 1) / 10 + 1
             ret += '<td rowspan=%d>%s</td>' % (
                 row_span, game.PlayerDeck.PlayerLink(opp_cannon_name))
             ret += '<td rowspan=%d>%d-%d-%d</td>' % (row_span, record[0],
                                                      record[1], record[2])
-            for idx, (opp_name, targ_player_cur_name, g) in enumerate(
+            for idx, (opp_name, tgt_player_curname, g) in enumerate(
                 game_list):
                 if idx % 10 == 0 and idx > 0:
                     ret += '</tr><tr>'
-                ret += g.ShortRenderCellWithPerspective(targ_player_cur_name, 
-                                                        opp_name)
+                ret += g.short_render_cell_with_perspective(tgt_player_curname,
+                                                            opp_name)
             ret += '</tr>\n'
         ret += '</table></body></html>'
         return ret
@@ -300,7 +316,7 @@ class GamePage(object):
         query_dict = dict(urlparse.parse_qsl(web.ctx.env['QUERY_STRING']))
         debug = int(query_dict.get('debug', 0))
         game_id = query_dict['game_id']
-        yyyymmdd = game.Game.DateFromId(game_id)
+        yyyymmdd = game.Game.get_date_from_id(game_id)
         contents = codecs.open('static/scrape_data/%s/%s' % (
                 yyyymmdd, game_id), 'r', encoding='utf-8').read()
         body_err_msg = ('<body><b>Error annotating game, tell ' 
@@ -308,8 +324,8 @@ class GamePage(object):
         try:
             return parse_game.annotate_game(contents, game_id, debug)
         except parse_game.BogusGameError, b:
-            return contents.replace('<body>', body_err_msg + ': foo? ' + 
-                                    str(b))
+            return contents.replace('<body>',
+                                    body_err_msg + ': foo? ' + str(b))
         except Exception, e:
             import sys, StringIO, traceback
             exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -339,9 +355,9 @@ class SearchResultPage(object):
 
         matcher = query_matcher.QueryMatcher(**query_dict)
         found_any = False
-        for idx, game_match in enumerate(matcher.QueryDB(games)):
+        for idx, game_match in enumerate(matcher.query_db(games)):
             found_any = True
-            ret += game_match.DisplayGameSnippet() + '<br>'
+            ret += game_match.display_game_snippet() + '<br>'
         if not found_any:
             ret += 'Your search returned no matches<br>'
 

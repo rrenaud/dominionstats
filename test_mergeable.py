@@ -15,7 +15,7 @@ class MergeableTest(unittest.TestCase):
         b = MyMergeableObject()
         b.foo = 7
 
-        a.Merge(b)
+        a.merge(b)
         self.assertEquals(a.foo, 10)
 
     def testCopyMissingAttr(self):
@@ -24,7 +24,7 @@ class MergeableTest(unittest.TestCase):
         a.foo = 'bar'
         b.baz = 'x'
 
-        a.Merge(b)
+        a.merge(b)
         self.assertEquals(a.foo, 'bar')
         self.assertEquals(a.baz, 'x')
 
@@ -39,7 +39,7 @@ class MergeableTest(unittest.TestCase):
 
         b.only_here = MyMergeableObject()
         b.only_here.bar = 20
-        a.Merge(b)
+        a.merge(b)
         self.assertEquals(a.c.foo, 15)
         self.assertEquals(a.only_here.bar, 20)
 
@@ -54,7 +54,7 @@ class MergeDictTest(unittest.TestCase):
         a['foo'] = 3
         b['bar'] = 3
 
-        a.Merge(b)
+        a.merge(b)
         self.assertEquals(a['bar'], 3)
 
 class MixedMergeTest(unittest.TestCase):
@@ -72,7 +72,7 @@ class MixedMergeTest(unittest.TestCase):
 
         b.b['f'] = 'foo'
 
-        a.Merge(b)
+        a.merge(b)
         self.assertEquals(a.b['d'].e, 4)
         self.assertEquals(a.b['f'], 'foo')
 

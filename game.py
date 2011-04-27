@@ -18,7 +18,7 @@ class PlayerDeckChange(object):
         for cat in self.CATEGORIES:
             setattr(self, cat, [])
 
-    def MergeChanges(self, other_changes):
+    def merge_changes(self, other_changes):
         assert self.name == other_changes.name
         for cat in self.CATEGORIES:
             getattr(self, cat).extend(getattr(other_changes, cat))
@@ -41,19 +41,19 @@ class Turn(object):
         encoded['poss_no'] = self.poss_no
         return pprint.pformat(encoded)
 
-    def Player(self):
+    def get_player(self):
         return self.player
 
-    def PlayerAccumulates(self):
+    def player_accumulates(self):
         return self.buys + self.gains
 
-    def TurnNo(self):
+    def get_turn_no(self):
         return self.turn_no
 
-    def PossNo(self):
+    def get_poss_no(self):
         return self.poss_no
 
-    def DeckChanges(self):
+    def deck_changes(self):
         ret = []
         my_change = PlayerDeckChange(self.player.Name())
         ret.append(my_change)
@@ -144,74 +144,75 @@ class Game(object):
                     poss_ct, out_ct = 0, 0
                 self.turns.append(Turn(turn, game_dict, pd, turn_ct, poss_ct))
 
-        self.turns.sort(key=lambda x: (x.TurnNo(),
-                                       x.Player().TurnOrder(),
-                                       x.PossNo()))
+        self.turns.sort(key=lambda x: (x.get_turn_no(),
+                                       x.get_player().TurnOrder(),
+                                       x.get_poss_no()))
 
-    def GetPlayerDeck(self, player_name):
+    def get_player_deck(self, player_name):
         for p in self.player_decks:
             if p.Name() == player_name:
                 return p
         assert ValueError, "%s not in players" % player_name
 
-    def Turns(self):
+    #TODO: this could be made into a property
+    def get_turns(self):
         return self.turns
 
-    def Supply(self):
+    def get_supply(self):
         return self.supply
 
-    def PlayerDecks(self):
+    def get_player_decks(self):
         return self.player_decks
 
-    def AllPlayerNames(self):
+    def all_player_names(self):
         return [pd.Name() for pd in self.player_decks]
 
-    def WinningScore(self):
+    def get_winning_score(self):
         return self.winning_score
 
     @staticmethod
-    def DateFromId(game_id):
+    def get_date_from_id(game_id):
         yyyymmdd_date = game_id.split('-')[1]
         return yyyymmdd_date
 
-    def Date(self):
+    def date(self):
         from datetime import datetime
 
-        return datetime.strptime(Game.DateFromId(self.id), "%Y%m%d")
+        return datetime.strptime(Game.get_date_from_id(self.id), "%Y%m%d")
 
-    def Id(self):
+    def get_id(self):
         return self.id
 
-    def IsotropicUrl(self):
-        yyyymmdd_date = Game.DateFromId(self.id)
-        return 'http://dominion.isotropic.org/gamelog/%s/%s/%s.gz' % (
-        yyyymmdd_date[:6], yyyymmdd_date[-2:], self.id)
+    def isotropic_url(self):
+        yyyymmdd_date = Game.get_date_from_id(self.id)
+        path = '%s/%s/%s.gz' % (yyyymmdd_date[:6], yyyymmdd_date[-2:], self.id)
+        return 'http://dominion.isotropic.org/gamelog/%s' % path
 
     @staticmethod
-    def CouncilRoomOpenLinkFromId(game_id):
+    def get_councilroom_link_from_id(game_id):
         return '<a href="/game?game_id=%s">' % game_id
 
-    def CouncilRoomOpenLink(self):
-        return self.CouncilRoomOpenLinkFromId(self.id)
+    def get_councilroom_open_link(self):
+        return self.get_councilroom_link_from_id(self.id)
 
-    def DubiousQuality(self):
-        num_players = len(set(pd.Name() for pd in self.PlayerDecks()))
-        if num_players < len(self.PlayerDecks()): return True
+    def dubious_quality(self):
+        num_players = len(set(pd.Name() for pd in self.get_player_decks()))
+        if num_players < len(self.get_player_decks()): return True
 
-        total_accumed_by_players = self.CardsAccumulatedPerPlayer()
+        total_accumed_by_players = self.cards_accumalated_per_player()
         for player_name, accumed_dict in total_accumed_by_players.iteritems():
             if sum(accumed_dict.itervalues()) < 5:
                 return True
 
         return False
 
-    def WinLossTie(self, targ, other=None):
-        targ_deck = self.GetPlayerDeck(targ)
+    def win_loss_tie(self, targ, other=None):
+        targ_deck = self.get_player_deck(targ)
 
         if other is None:
             other_win_points = 2 if targ_deck.WinPoints() == 0 else 0
         else:
-            other_win_points = self.GetPlayerDeck(other).WinPoints()
+            other_win_points = self.get_player_deck(other).WinPoints()
 
         if targ_deck.WinPoints() > 1 and other_win_points < 1:
             return WIN
@@ -219,67 +220,70 @@ class Game(object):
             return LOSS
         return TIE
 
-    def TotalCardsAccumulated(self):
+    def total_cards_accumulated(self):
         ret = collections.defaultdict(int)
-        for turn in self.Turns():
-            for accumed_card in turn.PlayerAccumulates():
+        for turn in self.get_turns():
+            for accumed_card in turn.player_accumulates():
                 ret[accumed_card] += 1
         return ret
 
     # TODO(rrenaud): Get rid of this, and use DeckChangesPerPlayer() instead?
-    def CardsAccumulatedPerPlayer(self):
+    def cards_accumalated_per_player(self):
         if 'card_accum_cache' in self.__dict__:
             return self.card_accum_cache
         ret = dict((pd.Name(), collections.defaultdict(int)) for
-        pd in self.PlayerDecks())
-        for turn in self.Turns():
-            for accumed_card in turn.PlayerAccumulates():
-                ret[turn.Player().Name()][accumed_card] += 1
+        pd in self.get_player_decks())
+        for turn in self.get_turns():
+            for accumed_card in turn.player_accumulates():
+                ret[turn.get_player().Name()][accumed_card] += 1
         self.card_accum_cache = ret
         return ret
 
-    def DeckChangesPerPlayer(self):
+    def deck_changes_per_player(self):
         changes = {}
-        for pd in self.PlayerDecks():
+        for pd in self.get_player_decks():
             changes[pd.Name()] = PlayerDeckChange(pd.Name())
-        for turn in self.Turns():
-            for change in turn.DeckChanges():
-                changes[change.name].MergeChanges(change)
+        for turn in self.get_turns():
+            for change in turn.deck_changes():
+                changes[change.name].merge_changes(change)
         return changes.values()
 
-    def AnyResigned(self):
-        return any(pd.Resigned() for pd in self.PlayerDecks())
+    def any_resigned(self):
+        return any(pd.Resigned() for pd in self.get_player_decks())
 
-    def ShortRenderCellWithPerspective(self, target_player, opp_player=None):
-        target_deck = self.GetPlayerDeck(target_player)
+    def short_render_cell_with_perspective(self, target_player,
+                                           opp_player=None):
+        target_deck = self.get_player_deck(target_player)
         opp_deck = None
         if opp_player is not None:
-            opp_deck = self.GetPlayerDeck(opp_player)
+            opp_deck = self.get_player_deck(opp_player)
         color = target_deck.GameResultColor(opp_deck)
 
         ret = '<td>'
-        ret += self.CouncilRoomOpenLink()
+        ret += self.get_councilroom_open_link()
         ret += '<font color=%s>' % color
         ret += target_deck.ShortRenderLine()
-        for player_deck in self.PlayerDecks():
+        for player_deck in self.get_player_decks():
             if player_deck != target_deck:
                 ret += player_deck.ShortRenderLine()
         ret += '</font></a></td>'
         return ret
 
-    def GameStateIterator(self):
+    def game_state_iterator(self):
         return GameState(self)
 
 
 class GameState(object):
     def __init__(self, game):
         self.game = game
-        self.turn_ordered_players = sorted(game.PlayerDecks(),
+        self.turn_ordered_players = sorted(game.get_player_decks(),
                                            key=PlayerDeck.TurnOrder)
         self.supply = ConvertibleDefaultDict(value_type=int)
-        num_players = len(game.PlayerDecks())
-        for card in itertools.chain(card_info.EVERY_SET_CARDS, game.Supply()):
-            self.supply[card] = card_info.NumCopiesPerGame(card, num_players)
+        num_players = len(game.get_player_decks())
+        for card in itertools.chain(card_info.EVERY_SET_CARDS,
+                                    game.get_supply()):
+            self.supply[card] = card_info.num_copies_per_game(card,
+                                                              num_players)
 
         self.player_decks = ConvertibleDefaultDict(
             value_type=lambda: ConvertibleDefaultDict(int))
@@ -291,29 +295,29 @@ class GameState(object):
             self.player_decks[player.Name()]['Copper'] = 7
             self.player_decks[player.Name()]['Estate'] = 3
 
-    def GetDeckComposition(self, player):
+    def get_deck_composition(self, player):
         return self.player_decks[player]
 
-    def EncodeGameState(self):
+    def encode_game_state(self):
         return {'supply': self.supply.to_primitive_object(),
                 'player_decks': self.player_decks.to_primitive_object()}
 
-    def _TakeTurn(self, turn):
-        def ApplyDiff(cards, name, supply_dir, deck_dir):
+    def _take_turn(self, turn):
+        def apply_diff(cards, name, supply_dir, deck_dir):
             for card in cards:
                 self.supply[card] += supply_dir
                 self.player_decks[name][card] += deck_dir
 
-        for deck_change in turn.DeckChanges():
-            ApplyDiff(deck_change.buys + deck_change.gains,
+        for deck_change in turn.deck_changes():
+            apply_diff(deck_change.buys + deck_change.gains,
                       deck_change.name, -1, 1)
-            ApplyDiff(deck_change.trashes, deck_change.name, 0, -1)
-            ApplyDiff(deck_change.returns, deck_change.name, 1, -1)
+            apply_diff(deck_change.trashes, deck_change.name, 0, -1)
+            apply_diff(deck_change.returns, deck_change.name, 1, -1)
 
     def __iter__(self):
         yield self
-        for turn in self.game.Turns():
-            self._TakeTurn(turn)
+        for turn in self.game.get_turns():
+            self._take_turn(turn)
             yield self
             
         

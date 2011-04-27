@@ -9,22 +9,22 @@ class IncrementalScanner(object):
             self.num_games = stored_info['num_games']
             self.max_game_id = stored_info['max_game_id']
 
-    def MaxGameId(self):
+    def get_max_game_id(self):
         return self.max_game_id
 
-    def NumGames(self):
+    def get_num_games(self):
         return self.num_games
 
-    def StatusMsg(self):
+    def status_msg(self):
         return 'Max game id %s, num games %s' % (self.max_game_id,
                                                  self.num_games)
 
-    def Reset(self):
+    def reset(self):
         self.num_games = 0
         self.max_game_id = ''
-        self.Save()
+        self.save()
 
-    def Scan(self, collection, query):
+    def scan(self, collection, query):
         assert not '_id' in query
         query['_id'] = {'$gt': self.max_game_id}
         for item in collection.find(query):
@@ -32,7 +32,7 @@ class IncrementalScanner(object):
             self.num_games += 1
             yield item
 
-    def Save(self):
+    def save(self):
         self.db.scanner.save({'_id': self.scan_name,
                               'num_games': self.num_games,
                               'max_game_id': self.max_game_id})

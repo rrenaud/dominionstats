@@ -107,7 +107,7 @@ def capture_cards(line):
             if maybe_plural == '&diams;':
                 continue
             try:
-                card = card_info.SingularOf(maybe_plural)
+                card = card_info.singular_of(maybe_plural)
             except KeyError, exception:
                 print line
                 raise exception
@@ -255,7 +255,7 @@ def parse_game(game_str, dubious_check = False):
     associate_turns_with_owner(game_dict, turns)
     assign_win_points(game_dict)
 
-    if dubious_check and Game(game_dict).DubiousQuality():
+    if dubious_check and Game(game_dict).dubious_quality():
         raise BogusGameError('Dubious Quality')
 
     return game_dict
@@ -344,7 +344,7 @@ def parse_deck(deck_str):
             right_bracket_index = card_blob.find('>')
             card_name = card_blob[right_bracket_index + 1:]
             try:
-                card_name = card_info.SingularOf(card_name)
+                card_name = card_info.singular_of(card_name)
             except KeyError, exception:
                 print chunk, card_name, card_blob[right_bracket_index - 10:]
                 raise exception
@@ -399,8 +399,8 @@ def count_money(plays):
             coppersmith_ct += 1
         elif card == 'Copper':
             money += 1 + coppersmith_ct
-        elif card_info.IsTreasure(card):
-            money += card_info.MoneyValue(card)
+        elif card_info.is_treasure(card):
+            money += card_info.money_value(card)
     return money
 
 PLAYER_IND_RE = re.compile('player(?P<num>\d+)')
@@ -752,17 +752,17 @@ def check_game_sanity(game_val, output):
     In particular, check that the end game player decks match the result of 
     simulating deck interactions saved in game val."""
 
-    supply = game_val.Supply()
+    supply = game_val.get_supply()
     if set(supply).intersection(['Masquerade', 'Black Market']):
         return True
     
     last_state = None
-    game_state_iterator = game_val.GameStateIterator()
+    game_state_iterator = game_val.game_state_iterator()
     for game_state in game_state_iterator:
         last_state = game_state
-    for player_deck in game_val.PlayerDecks():
+    for player_deck in game_val.get_player_decks():
         parsed_deck_comp = player_deck.Deck()
-        computed_deck_comp = last_state.GetDeckComposition(
+        computed_deck_comp = last_state.get_deck_composition(
             player_deck.Name()) 
 
         delete_keys_with_empty_vals(parsed_deck_comp)
@@ -782,8 +782,8 @@ def check_game_sanity(game_val, output):
                                 computed_deck_comp.get(card, 0)))
                     found_something_wrong = True
             if found_something_wrong:
-                output.write('%s %s\n' % (player_deck.Name(), game_val.Id()))
-                output.write(' '.join(game_val.Supply()))
+                output.write('%s %s\n' % (player_deck.Name(), game_val.get_id()))
+                output.write(' '.join(game_val.get_supply()))
                 output.write('\n')
                 return False
     return True
@@ -819,8 +819,8 @@ def annotate_game(contents, game_id, debug=False):
     states = []
     
     game_val = game.Game(parsed_game)
-    for game_state in game_val.GameStateIterator():
-        states.append(game_state.EncodeGameState())
+    for game_state in game_val.game_state_iterator():
+        states.append(game_state.encode_game_state())
 
     parsed_game['game_states'] = states
 
@@ -843,12 +843,12 @@ def annotate_game(contents, game_id, debug=False):
     if debug > 2:
         ret += _pretty_format_html(parsed_game)
     if debug > 1:
-        for turn in game_val.Turns():
+        for turn in game_val.get_turns():
             ret += '%d %d %d %s %s<br>' % (
-                turn.TurnNo(), 
-                turn.Player().TurnOrder(), turn.PossNo(), 
+                turn.get_turn_no(),
+                turn.get_player().TurnOrder(), turn.get_poss_no(),
                 turn.turn_dict.get('poss', False),
-                turn.Player().Name())
+                turn.get_player().Name())
 
     import cStringIO as StringIO
     output_buf = StringIO.StringIO()
@@ -895,7 +895,7 @@ bug</a> and tell rrenaud@gmail.com<br>''' % game_id
             show_turn_id, show_turn_id, split_chunk[0])
 
         if debug:
-            ret += '<br>' + repr(game_val.Turns()[cur_turn_ind]).replace(
+            ret += '<br>' + repr(game_val.get_turns()[cur_turn_ind]).replace(
                 '\n', '<br>')
         cur_turn_ind += 1
 

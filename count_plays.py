@@ -26,7 +26,7 @@ def analyze_plays():
         counter += 1
         for deck in game['decks']:
             analyze_deck(deck)
-        if not counter % 10:
+        if counter % 10 == 0:
             print(counter)
         if counter % 1000 == 100:
             # instant gratification!

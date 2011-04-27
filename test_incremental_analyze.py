@@ -4,7 +4,8 @@ import os
 import pymongo
 import pprint
 
-range_test_datas = [dict(name='r1', ranges=[('20101020', '20101021'), ('20101021', '20101022')]),
+range_test_datas = [dict(name='r1', ranges=[('20101020', '20101021'),
+                                            ('20101021', '20101022')]),
                     dict(name='r2', ranges=[('20101020', '20101022')])]
 
 c = pymongo.Connection()

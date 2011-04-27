@@ -69,13 +69,14 @@ def accum_buy_stats(games_stream, accum_stats,
     """
     for idx, game_val in enumerate(games_stream):
         counted_game_len = False
-        supply_cards = set(game_val.Supply()).union(card_info.EVERY_SET_CARDS)
+        every_set_cards = card_info.EVERY_SET_CARDS
+        supply_cards = set(game_val.get_supply()).union(every_set_cards)
 
-        for changes in game_val.DeckChangesPerPlayer():
+        for changes in game_val.deck_changes_per_player():
             if not acceptable_deck_filter(game_val, changes.name):
                 continue
             any_gained = set()
-            win_points = game_val.GetPlayerDeck(changes.name).WinPoints()
+            win_points = game_val.get_player_deck(changes.name).WinPoints()
 
             for category in game.PlayerDeckChange.CATEGORIES:
                 for card in getattr(changes, category):
@@ -95,11 +96,11 @@ def accum_buy_stats(games_stream, accum_stats,
 
             if not counted_game_len:  # don't double count this
                 counted_game_len = True
-                game_len = game_val.Turns()[-1].TurnNo()
+                game_len = game_val.get_turns()[-1].get_turn_no()
                 for card in supply_cards:
                     stats_obj = accum_stats[card]
                     stats_obj.game_length.AddOutcome(game_len)
-                    if 'Colony' in game_val.Supply():
+                    if 'Colony' in game_val.get_supply():
                         stats_obj.game_length_colony.AddOutcome(game_len)
 
         if idx + 1 == max_games:
@@ -111,7 +112,7 @@ def add_effectiveness(accum_stats, global_stats):
     don't gain the card.
     """
     # first, find the incremental effect of the player's skill
-    any_eff = accum_stats['Estate'].available.meanDiff(
+    any_eff = accum_stats['Estate'].available.mean_diff(
         global_stats['Estate'].available)
 
     for card in accum_stats:
@@ -119,12 +120,12 @@ def add_effectiveness(accum_stats, global_stats):
         # in which other players gain/skip the card
         stats_obj = accum_stats[card]
         global_stats_obj = global_stats[card]
-        card_gain_eff = stats_obj.any_gained.meanDiff(
+        card_gain_eff = stats_obj.any_gained.mean_diff(
             global_stats_obj.any_gained)
-        card_skip_eff = stats_obj.none_gained.meanDiff(
+        card_skip_eff = stats_obj.none_gained.mean_diff(
             global_stats_obj.none_gained)
-        stats_obj.effectiveness_gain = card_gain_eff.meanDiff(any_eff)
-        stats_obj.effectiveness_skip = card_skip_eff.meanDiff(any_eff)
+        stats_obj.effectiveness_gain = card_gain_eff.mean_diff(any_eff)
+        stats_obj.effectiveness_skip = card_skip_eff.mean_diff(any_eff)
 
 def progress_meter(iterable, chunksize):
     """ Prints progress through iterable at chunksize intervals."""
@@ -147,7 +148,7 @@ def do_scan(scanner, games_col, accum_stats, max_games):
     accum_stats: DeckBuyStats instance to store results.
     """
     def games_stream():
-        for raw_game in progress_meter(scanner.Scan(games_col, {}), 1000):
+        for raw_game in progress_meter(scanner.scan(games_col, {}), 1000):
             yield game.Game(raw_game)
     accum_buy_stats(games_stream(), accum_stats, max_games=max_games)
 
@@ -169,19 +170,19 @@ def main():
 
     if not args.incremental:
         print 'resetting scanner and db'
-        scanner.Reset()
+        scanner.reset()
         buy_collection.drop()
 
-    start_size = scanner.NumGames()
-    print scanner.StatusMsg()
+    start_size = scanner.get_num_games()
+    print scanner.status_msg()
     do_scan(scanner, games, overall_stats, args.max_games)
-    print scanner.StatusMsg()
-    end_size = scanner.NumGames()
+    print scanner.status_msg()
+    end_size = scanner.get_num_games()
 
     if args.incremental:
         existing_overall_data = DeckBuyStats()
         utils.read_object_from_db(existing_overall_data, buy_collection, '')
-        overall_stats.Merge(existing_overall_data)
+        overall_stats.merge(existing_overall_data)
         def deck_freq(data_set):
             return data_set['Estate'].available.Frequency()
         print 'existing', deck_freq(existing_overall_data), 'decks'
@@ -189,11 +190,11 @@ def main():
 
     utils.write_object_to_db(overall_stats, buy_collection, '')
 
-    scanner.Save()
+    scanner.save()
     time_diff = time.time() - start
     games_diff = end_size - start_size
-    print 'took', time_diff, 'seconds for', games_diff, 'games for a rate' \
-        ' of', games_diff / time_diff, 'games/sec'
+    print ('took', time_diff, 'seconds for', games_diff, 'games for a rate of',
+           games_diff / time_diff, 'games/sec')
 
 def profilemain():
     """ Like main(), but print a profile report."""

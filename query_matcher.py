@@ -6,8 +6,8 @@ import card_info
 import game
 import name_merger
 
-def _RenderCard(card, freq, kingdom_restrict):
-    def FontSize(freq):
+def _render_card(card, freq, kingdom_restrict):
+    def font_size(freq):
         if freq >= 10:
             return "+2"
         elif not freq:
@@ -15,8 +15,8 @@ def _RenderCard(card, freq, kingdom_restrict):
         else:
             return "+0"
 
-    font_size = FontSize(freq)
-    plural = card_info.Pluralize(card, freq)
+    font_size = font_size(freq)
+    plural = card_info.pluralize(card, freq)
 
     rendered = '<font size="%s">%d %s</font>' % (font_size, freq, plural)
     if card in kingdom_restrict:
@@ -45,23 +45,24 @@ class _DeckMatcher(object):
             # it rewards having a balanced match.
             # This would also be improved by examining the game and seeing when
             # cards were played in case they are later trashed.
-            self.kingdom_match_score = kingdom_total_matched * 10 + (
-                has_all * 100)
-        self.name_match_score = query_matcher.NameMatch(
-            player_deck.Name()) * 10000
+            self.kingdom_match_score = (kingdom_total_matched * 10 +
+                                        (has_all * 100))
 
-    def DeckMatchScore(self):
+        _score = query_matcher.name_match(player_deck.Name()) * 10000
+        self.name_match_score = _score
+
+    def deck_match_score(self):
         return self.kingdom_match_score + self.name_match_score
 
-    def KingdomMatchScore(self):
+    def get_kingdom_match_score(self):
         return self.kingdom_match_score
 
-    def _MaybeHighlightName(self, name):
-        if self.query_matcher.NameMatch(name):
+    def _maybe_highlight_name(self, name):
+        if self.query_matcher.name_match(name):
             return '<b>%s</b>' % name
         return name
 
-    def DisplayPlayerDeck(self):
+    def display_player_deck(self):
         pd = self.player_deck
         ret = ''
         ret += '%s: %d points: ' % (
@@ -69,7 +70,7 @@ class _DeckMatcher(object):
                 pd.Name(),
                 '<font color="%s">%s</font>' % (
                     self.player_deck.GameResultColor(),
-                    self._MaybeHighlightName(pd.Name()))
+                    self._maybe_highlight_name(pd.Name()))
                 ),
             pd.Points())
         card_freqs = pd.Deck().items()
@@ -79,10 +80,12 @@ class _DeckMatcher(object):
             if not first:
                 ret += ', '
             first = False
-            ret += _RenderCard(card, freq, self.query_matcher.kingdom_restrict)
+            ret += _render_card(card, freq,
+                                self.query_matcher.kingdom_restrict)
         if self.query_matcher.debug_level > 0:
-            ret += '<i><font size="-1"> name:%d kingdom:%d</font></i>' % (
-                self.name_match_score, self.kingdom_match_score)
+            ret += ('<i><font size="-1"> name:%d '
+                    'kingdom:%d</font></i>' % (self.name_match_score,
+                                               self.kingdom_match_score))
         ret += '<br>'
         return ret
 
@@ -92,41 +95,41 @@ class GameMatcher(object):
         self.g = g
         self.query_matcher = query_matcher
         self.deck_matches = []
-        for pd in g.PlayerDecks():
+        for pd in g.get_player_decks():
             self.deck_matches.append(_DeckMatcher(pd, query_matcher))
-        self.deck_matches.sort(key=_DeckMatcher.DeckMatchScore, reverse=True)
+        self.deck_matches.sort(key=_DeckMatcher.deck_match_score, reverse=True)
 
-        kingdom_match_scores = [dm.KingdomMatchScore() for dm in
+        kingdom_match_scores = [dm.get_kingdom_match_score() for dm in
                                 self.deck_matches]
         self.kingdom_match_diff = max(kingdom_match_scores) - min(
             kingdom_match_scores)
 
         self.sum_deck_match_score = sum(
-        dm.DeckMatchScore() for dm in self.deck_matches)
+        dm.deck_match_score() for dm in self.deck_matches)
         # newness a tiebreaker, should always be less than 1
-        self.newness = float(game.Game.DateFromId(self.g.Id())) / 1e9
+        self.newness = float(game.Game.get_date_from_id(self.g.get_id())) / 1e9
         self.final_score = (self.sum_deck_match_score +
                             2 * self.kingdom_match_diff + self.newness)
 
-    def _GameMatchScore(self):
+    def _game_match_score(self):
         return self.final_score
 
-    def _DisplaySupply(self):
-        total_accum_dict = self.g.TotalCardsAccumulated()
-        supply = sorted(self.g.Supply(),
+    def _display_supply(self):
+        total_accum_dict = self.g.total_cards_accumulated()
+        supply = sorted(self.g.get_supply(),
                         key=lambda x: -total_accum_dict[x])
         rendered_supply_items = []
         for card in supply:
             freq = total_accum_dict[card]
             rendered_supply_items.append(
-                _RenderCard(card, freq, self.query_matcher.kingdom_restrict))
+                _render_card(card, freq, self.query_matcher.kingdom_restrict))
 
         return ', '.join(rendered_supply_items)
 
 
-    def DisplayGameSnippet(self):
-        ret = '%s%s</a>' % (self.g.CouncilRoomOpenLink(),
-                            self._DisplaySupply())
+    def display_game_snippet(self):
+        ret = '%s%s</a>' % (self.g.get_councilroom_open_link(),
+                            self._display_supply())
         if self.query_matcher.debug_level > 0:
             ret += (' <i><font size="-1">'
                     'final:%f kingdom diff:%f sum deck match :%f new:%f'
@@ -135,7 +138,7 @@ class GameMatcher(object):
             self.sum_deck_match_score, self.newness)
         ret += '<br>'
         for deck_match in self.deck_matches:
-            ret += deck_match.DisplayPlayerDeck()
+            ret += deck_match.display_player_deck()
         return ret
 
 
@@ -148,9 +151,9 @@ class QueryMatcher(object):
         self.debug_level = args.get('debug', 0)
 
         if 'p1_name' in args:
-            self._AddName(args['p1_name'])
+            self._add_name(args['p1_name'])
         if 'p2_name' in args:
-            self._AddName(args['p2_name'])
+            self._add_name(args['p2_name'])
         if 'kingdom' in args:
             def sane_title(card):
                 return card.title().replace("'S", "'s")
@@ -165,23 +168,23 @@ class QueryMatcher(object):
         if self.kingdom_restrict:
             self.db_query['supply'] = {'$all': self.kingdom_restrict}
 
-    def _AddName(self, name):
+    def _add_name(self, name):
         if type(name) is not unicode:
             name = name.decode('utf8')
         self.players_restrict.append(name_merger.norm_name(name))
         self.exact_names.append(name)
 
-    def NameMatch(self, name):
+    def name_match(self, name):
         return (name in self.exact_names) + (
         name_merger.norm_name(name) in self.players_restrict)
 
-    def QueryDB(self, table):
+    def query_db(self, table):
         # TODO support sorting options:
         #   player skill
         results = []
         games_cursor = table.find(self.db_query)
-        for raw_game in games_cursor.sort('_id', pymongo.DESCENDING
-        ).limit(self.limit):
+        _order = pymongo.DESCENDING
+        for raw_game in games_cursor.sort('_id', _order).limit(self.limit):
             results.append(GameMatcher(game.Game(raw_game), self))
-        results.sort(key=GameMatcher._GameMatchScore, reverse=True)
+        results.sort(key=GameMatcher._game_match_score, reverse=True)
         return results

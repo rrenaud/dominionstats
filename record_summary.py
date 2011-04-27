@@ -4,16 +4,16 @@ class RecordSummary(object):
         self.win_points = 0
         self.num_games = 0
 
-    def RecordResult(self, res, win_points):
+    def record_result(self, res, win_points):
         self.record[res] += 1
         self.win_points += win_points
         self.num_games += 1
 
-    def AvgWinPoints(self):
+    def average_win_points(self):
         if self.num_games:
             return float(self.win_points) / self.num_games
         else:
             return 0
 
-    def DisplayWinLossTie(self):
+    def display_win_loss_tie(self):
         return '%d-%d-%d' % tuple(self.record)

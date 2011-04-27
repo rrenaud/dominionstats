@@ -27,7 +27,8 @@ class MeanVarStat(primitive_util.PrimitiveConversion,
     def Variance(self):
         if self.freq <= 1:
             return 1e10
-        return ((self.sum_sq + 4) - ((self.sum + 2) ** 2) / (self.freq + 2)) / (self.freq + 1)
+        return (((self.sum_sq + 4) - ((self.sum + 2) ** 2) / (self.freq + 2)) /
+                (self.freq + 1))
 
     def StdDev(self):
         return self.Variance() ** .5
@@ -89,22 +90,22 @@ class DiffStat(object):
     def freq(self):
         return self.mvs1.freq
 
-    def RenderInterval(self, factor=2, sig_digits=2):
-        if self.SampleStdDev() >= 10000:
+    def render_interval(self, factor=2, sig_digits=2):
+        if self.sample_std_dev() >= 10000:
             return u'-'
-        return u'%.2f ± %.2f' % (self.Mean(), factor * self.SampleStdDev())
+        return u'%.2f ± %.2f' % (self.mean(), factor * self.sample_std_dev())
         
-    def RenderStdevs(self):
+    def render_std_devs(self):
         if not self.freq:
             return u'-'
-        return u'%.2f' % (self.Mean() / self.SampleStdDev())
+        return u'%.2f' % (self.mean() / self.sample_std_dev())
 
-    def Mean(self):
-        return self.mvs1.Mean() - self.mvs2.Mean()
+    def mean(self):
+        return self.mvs1.mean() - self.mvs2.mean()
 
-    def SampleStdDev(self):
-        return (self.mvs1.SampleStdDev() ** 2 + self.mvs2.SampleStdDev() ** 2) ** 0.5
+    def sample_std_dev(self):
+        return (self.mvs1.sample_std_dev() ** 2 + self.mvs2.sample_std_dev() ** 2) ** 0.5
 
-    def meanDiff(self, o):
+    def mean_diff(self, o):
         return DiffStat(self, o)
 
