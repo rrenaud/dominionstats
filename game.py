@@ -1,12 +1,23 @@
+""" This serves as a nice interface to the game documents stored in the db.  
+
+Any information that can be derived from just the game state itself, and 
+doesn't depend on foreign information, such as about the particular 
+players in the game or other games in the collection belongs here.
+"""
+
 import collections
 import pprint
 from primitive_util import ConvertibleDefaultDict
-import card_info
+import card_info as ci
 import itertools
 
 WIN, LOSS, TIE = range(3)
 
+def get_maybe_abbrev(d, k):
+    return d.get(k, []) + d.get(k[0], [])
+
 class PlayerDeckChange(object):
+    " This represents a change to a players deck in response to a game event."
     CATEGORIES = ['buys', 'gains', 'returns', 'trashes']
 
     def __init__(self, name):
@@ -27,9 +38,9 @@ class Turn(object):
     def __init__(self, turn_dict, game, player, turn_no, poss_no):
         self.game = game
         self.player = player
-        self.plays = turn_dict.get('plays', [])
-        self.gains = turn_dict.get('gains', [])
-        self.buys = turn_dict.get('buys', [])
+        self.plays = get_maybe_abbrev(turn_dict, 'plays')
+        self.gains = get_maybe_abbrev(turn_dict, 'gains')
+        self.buys = get_maybe_abbrev(turn_dict, 'buys')
         self.turn_no = turn_no
         self.poss_no = poss_no
         self.turn_dict = turn_dict
@@ -59,15 +70,16 @@ class Turn(object):
         ret.append(my_change)
         my_change.gains = self.gains
         my_change.buys = self.buys
-        my_change.trashes = self.turn_dict.get('trashes', [])
-        my_change.returns = self.turn_dict.get('returns', [])
+        my_change.trashes = get_maybe_abbrev(self.turn_dict, 'trashes')
+        my_change.returns = get_maybe_abbrev(self.turn_dict, 'returns')
 
-        opp_info = self.turn_dict.get('opp', {})
+        opp_info = self.turn_dict.get('opp', {}) or \
+            self.turn_dict.get('o', {})
         for opp_name, info_dict in opp_info.iteritems():
             change = PlayerDeckChange(opp_name)
-            change.gains.extend(info_dict.get('gains', []))
-            change.trashes.extend(info_dict.get('trashes', []))
-            change.returns.extend(info_dict.get('returns', []))
+            change.gains.extend(get_maybe_abbrev(info_dict, 'gains'))
+            change.trashes.extend(get_maybe_abbrev(info_dict, 'trashes'))
+            change.returns.extend(get_maybe_abbrev(info_dict, 'returns'))
             ret.append(change)
 
         return ret
@@ -272,6 +284,18 @@ class Game(object):
     def game_state_iterator(self):
         return GameState(self)
 
+def score_deck(deck_comp):
+    ret = 0
+    if 'Gardens' in deck_comp:
+        deck_size = sum(deck_comp.itervalues())
+        ret += deck_size / 10 * deck_comp['Gardens']
+    if 'Duke' in deck_comp:
+        ret += deck_comp['Duke'] * deck_comp.get('Duchy', 0)
+    if 'Fairgrounds' in deck_comp:
+        pass
+
+    for card in deck_comp:
+        ret += ci.vp_per_card(card) * deck_comp[card]
 
 class GameState(object):
     def __init__(self, game):
@@ -280,23 +304,23 @@ class GameState(object):
                                            key=PlayerDeck.TurnOrder)
         self.supply = ConvertibleDefaultDict(value_type=int)
         num_players = len(game.get_player_decks())
-        for card in itertools.chain(card_info.EVERY_SET_CARDS,
+        for card in itertools.chain(ci.EVERY_SET_CARDS,
                                     game.get_supply()):
-            self.supply[card] = card_info.num_copies_per_game(card,
-                                                              num_players)
+            self.supply[card] = ci.num_copies_per_game(card, num_players)
 
         self.player_decks = ConvertibleDefaultDict(
             value_type=lambda: ConvertibleDefaultDict(int))
 
-        self.supply['Copper'] = self.supply['Copper'] - (
+        self.supply[ci.COPPER] = self.supply[ci.ESTATE] - (
         len(self.turn_ordered_players) * 7)
 
         for player in self.turn_ordered_players:
-            self.player_decks[player.Name()]['Copper'] = 7
-            self.player_decks[player.Name()]['Estate'] = 3
+            self.player_decks[player.Name()][ci.COPPER] = 7
+            self.player_decks[player.Name()][ci.ESTATE] = 3
 
     def get_deck_composition(self, player):
         return self.player_decks[player]
+                    
 
     def encode_game_state(self):
         return {'supply': self.supply.to_primitive_object(),

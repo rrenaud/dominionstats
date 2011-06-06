@@ -12,10 +12,12 @@ parser = utils.incremental_date_range_cmd_line_parser()
 
 def main():
     args = parser.parse_args()
-    games_table = pymongo.Connection().test.games
+    table_name = 'games2'
+    input_dir = 'parsed_out2'
+    games_table = pymongo.Connection().test[table_name]
     games_table.ensure_index('players')
     games_table.ensure_index('supply')
-    data_files_to_load = os.listdir('parsed_out')
+    data_files_to_load = os.listdir(input_dir)
     data_files_to_load.sort()
     find_id = re.compile('game-.*.html')
     done = set()
@@ -30,7 +32,7 @@ def main():
             if yyyymmdd in done:
                 print 'skipping', fn, 'because done'
                 continue
-            contents = open('parsed_out/' + fn, 'r').read(100)
+            contents = open(input_dir + '/' + fn, 'r').read(100)
             if contents.strip() == '[]':
                 print "empty contents (make parser not dump empty files?)", \
                       fn
@@ -47,8 +49,8 @@ def main():
             else:
                 print first_game_id, str(query), 'not in db, importing'
         
-        cmd = ('mongoimport -h localhost parsed_out/%s -c '
-               'games --jsonArray' % fn)
+        cmd = ('mongoimport -h localhost %s/%s -c '
+               '%s --jsonArray' % (input_dir, fn, table_name))
         print cmd
         os.system(cmd)
 
