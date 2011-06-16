@@ -247,14 +247,15 @@ class PlayerPage(object):
         ret += '<body><A HREF="/">Back to CouncilRoom.com</A><BR><BR>'
 
         ret += """
-               Player: <form action='/player' method='get'>
+               Search for another player: <form action='/player' method='get'>
                <input type="text" name="player" style="width:100px;" />
                <input type="submit" value="Submit" />
-               </form>
+               </form><hr>
                """
+        ret += '<h2>CouncilRoom Profile for %s</h2><BR>' % target_player
 
         if len(aliases) > 1:
-            ret += 'Player aliases: ' + ', '.join(aliases) + '<br>\n'
+            ret += 'Aliases: ' + ', '.join(aliases) + '<br>\n'
 
 
         ret += render_record_table('Record by game size', overall_record,
@@ -270,6 +271,8 @@ class PlayerPage(object):
         ret += '<div style="clear: both;">&nbsp;</div>'
 
         ret += goals.MaybeRenderGoals(db, norm_target_player)
+
+        ret += '<A HREF="/popular_buys?player=%"><h2>Stats by card</h2></A><BR>\n' % target_player
 
         ret += '<h2>Most recent games</h2>\n'
         game_list.sort(key = game.Game.get_id, reverse = True)
