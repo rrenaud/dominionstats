@@ -32,9 +32,7 @@ def get_mongo_database():
       config.read('conf.ini')
 
       db = connection[config.get('mongo', 'database')]
-   #FIXME: this is too broad
    except:
-      # Might still err if test does not exist
       db = connection['test']
 
    return db

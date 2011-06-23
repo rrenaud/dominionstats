@@ -1,3 +1,10 @@
+""" This serves as a nice interface to the game documents stored in the db.  
+
+Any information that can be derived from just the game state itself, and 
+doesn't depend on foreign information, such as about the particular 
+players in the game or other games in the collection belongs here.
+"""
+
 import collections
 import pprint
 from primitive_util import ConvertibleDefaultDict
@@ -7,6 +14,7 @@ import itertools
 WIN, LOSS, TIE = range(3)
 
 class PlayerDeckChange(object):
+    " This represents a change to a players deck in response to a game event."
     CATEGORIES = ['buys', 'gains', 'returns', 'trashes']
 
     def __init__(self, name):
@@ -36,7 +44,7 @@ class Turn(object):
 
     def __repr__(self):
         encoded = dict(self.turn_dict)
-        encoded['player'] = self.player.Name()
+        encoded['player'] = self.player.name()
         encoded['turn_no'] = self.turn_no
         encoded['poss_no'] = self.poss_no
         return pprint.pformat(encoded)
@@ -55,7 +63,7 @@ class Turn(object):
 
     def deck_changes(self):
         ret = []
-        my_change = PlayerDeckChange(self.player.Name())
+        my_change = PlayerDeckChange(self.player.name())
         ret.append(my_change)
         my_change.gains = self.gains
         my_change.buys = self.buys
@@ -72,7 +80,6 @@ class Turn(object):
 
         return ret
 
-
 class PlayerDeck(object):
     def __init__(self, player_deck_dict, game):
         self.raw_player = player_deck_dict
@@ -84,14 +91,14 @@ class PlayerDeck(object):
         self.turn_order = player_deck_dict['order']
         self.num_real_turns = 0
 
-    def Name(self):
+    def name(self):
         return self.player_name
 
     def Points(self):
         return self.points
 
     def ShortRenderLine(self):
-        return '%s %d<br>' % (self.Name(), self.Points())
+        return '%s %d<br>' % (self.name(), self.Points())
 
     def WinPoints(self):
         return self.win_points
@@ -159,7 +166,7 @@ class Game(object):
 
     def get_player_deck(self, player_name):
         for p in self.player_decks:
-            if p.Name() == player_name:
+            if p.name() == player_name:
                 return p
         assert ValueError, "%s not in players" % player_name
 
@@ -177,7 +184,7 @@ class Game(object):
             return self.player_decks
 
     def all_player_names(self):
-        return [pd.Name() for pd in self.player_decks]
+        return [pd.name() for pd in self.player_decks]
 
     def get_winning_score(self):
         return self.winning_score
@@ -208,7 +215,7 @@ class Game(object):
         return self.get_councilroom_link_from_id(self.id)
 
     def dubious_quality(self):
-        num_players = len(set(pd.Name() for pd in self.get_player_decks()))
+        num_players = len(set(pd.name() for pd in self.get_player_decks()))
         if num_players < len(self.get_player_decks()): return True
 
         total_accumed_by_players = self.cards_accumalated_per_player()
@@ -243,18 +250,18 @@ class Game(object):
     def cards_accumalated_per_player(self):
         if 'card_accum_cache' in self.__dict__:
             return self.card_accum_cache
-        ret = dict((pd.Name(), collections.defaultdict(int)) for
+        ret = dict((pd.name(), collections.defaultdict(int)) for
         pd in self.get_player_decks())
         for turn in self.get_turns():
             for accumed_card in turn.player_accumulates():
-                ret[turn.get_player().Name()][accumed_card] += 1
+                ret[turn.get_player().name()][accumed_card] += 1
         self.card_accum_cache = ret
         return ret
 
     def deck_changes_per_player(self):
         changes = {}
         for pd in self.get_player_decks():
-            changes[pd.Name()] = PlayerDeckChange(pd.Name())
+            changes[pd.name()] = PlayerDeckChange(pd.name())
         for turn in self.get_turns():
             for change in turn.deck_changes():
                 changes[change.name].merge_changes(change)
@@ -284,6 +291,21 @@ class Game(object):
     def game_state_iterator(self):
         return GameState(self)
 
+def score_deck(deck_comp):
+    """ Given a dict of card, frequency, return the score. """
+    ret = 0
+    if 'Gardens' in deck_comp:
+        deck_size = sum(deck_comp.itervalues())
+        ret += deck_size / 10 * deck_comp['Gardens']
+    if 'Duke' in deck_comp:
+        ret += deck_comp['Duke'] * deck_comp.get('Duchy', 0)
+    if 'Fairgrounds' in deck_comp:
+        ret += len(deck_comp.keys()) / 5 * deck_comp['Fairgrounds']
+
+    for card in deck_comp:
+        ret += card_info.vp_per_card(card) * deck_comp[card]
+
+    return ret
 
 class GameState(object):
     def __init__(self, game):
@@ -301,11 +323,13 @@ class GameState(object):
             value_type=lambda: ConvertibleDefaultDict(int))
 
         self.supply['Copper'] = self.supply['Copper'] - (
-        len(self.turn_ordered_players) * 7)
+            len(self.turn_ordered_players) * 7)
 
         for player in self.turn_ordered_players:
-            self.player_decks[player.Name()]['Copper'] = 7
-            self.player_decks[player.Name()]['Estate'] = 3
+            self.player_decks[player.name()]['Copper'] = 7
+            self.player_decks[player.name()]['Estate'] = 3
+
+        self.turn_ind = 0
 
     def get_deck_composition(self, player):
         return self.player_decks[player]
@@ -313,6 +337,20 @@ class GameState(object):
     def encode_game_state(self):
         return {'supply': self.supply.to_primitive_object(),
                 'player_decks': self.player_decks.to_primitive_object()}
+
+    def _player_at_turn_ind(self, given_turn_ind):
+        return self.game.get_turns()[given_turn_ind].get_player()
+
+    def player_turn_order(self):
+        ret = []
+        l = len(self.turn_ordered_players)
+        offset = self.turn_ind % l
+        for i in range(l):
+            ret.append(self.turn_ordered_players[(i + offset) % l].name())
+        return ret
+
+    def turn_index(self):
+        return self.turn_ind
 
     def _take_turn(self, turn):
         def apply_diff(cards, name, supply_dir, deck_dir):
@@ -328,8 +366,8 @@ class GameState(object):
 
     def __iter__(self):
         yield self
-        for turn in self.game.get_turns():
+        for turn_ind, turn in enumerate(self.game.get_turns()):
+            self.turn_ind = turn_ind + 1
             self._take_turn(turn)
             yield self
             
-        

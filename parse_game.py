@@ -778,7 +778,7 @@ def check_game_sanity(game_val, output):
     for player_deck in game_val.get_player_decks():
         parsed_deck_comp = player_deck.Deck()
         computed_deck_comp = last_state.get_deck_composition(
-            player_deck.Name()) 
+            player_deck.name()) 
 
         delete_keys_with_empty_vals(parsed_deck_comp)
         computed_dict_comp = dict(computed_deck_comp)
@@ -797,7 +797,7 @@ def check_game_sanity(game_val, output):
                                 computed_deck_comp.get(card, 0)))
                     found_something_wrong = True
             if found_something_wrong:
-                output.write('%s %s\n' % (player_deck.Name(), game_val.get_id()))
+                output.write('%s %s\n' % (player_deck.name(), game_val.get_id()))
                 output.write(' '.join(game_val.get_supply()))
                 output.write('\n')
                 return False
@@ -868,7 +868,7 @@ def annotate_game(contents, game_id, debug=False):
                 turn.get_turn_no(),
                 turn.get_player().TurnOrder(), turn.get_poss_no(),
                 turn.turn_dict.get('poss', False),
-                turn.get_player().Name())
+                turn.get_player().name())
 
     import cStringIO as StringIO
     output_buf = StringIO.StringIO()
@@ -898,6 +898,7 @@ bug</a> and tell rrenaud@gmail.com<br>''' % game_id
             show_turn_id = '%s-show-turn-%d' % (player, turn_no + 1)
             poss_num = 0
         elif 'pname' in parsed_header:
+            # port the turn labeller back to game.py?
             turn_id = '%s-poss-turn-%d-%d' % (player, turn_no,
                                               poss_num)
             show_turn_id = '%s-show-poss-turn-%d-%d' % (

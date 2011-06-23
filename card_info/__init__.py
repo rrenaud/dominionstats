@@ -1,14 +1,18 @@
 import csv
 import os
 
-_cardlist_reader = csv.DictReader(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'card_list.csv')))
+_cardlist_reader = csv.DictReader(open(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), 'card_list.csv')))
 _to_singular = {}
 _to_plural = {}
 _card_index = {}
 
 _card_info_rows = {}
-#the way this file is being used, it seems like a good candidate for some sort
-#of Card class with properties, etc
+_card_names = []
+
+# the way this file is being used, it seems like a good candidate for some sort
+# of Card class with properties, etc
 def _init():
     for idx, cardlist_row in enumerate(_cardlist_reader):
         single, plural = cardlist_row['Singular'], cardlist_row['Plural']
@@ -19,6 +23,7 @@ def _init():
 
         _card_index[single] = idx
         _card_info_rows[single] = cardlist_row
+        _card_names.append(single)
 
 _init()
 
@@ -82,3 +87,6 @@ OPENING_CARDS.sort()
 
 def card_index(singular):
     return _card_index[singular]
+
+def card_names():
+    return _card_names

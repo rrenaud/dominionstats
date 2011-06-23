@@ -25,10 +25,10 @@
 "Council Room","Council Rooms",5,0,4,1,0,0,0,0,0,0,0,0,1
 "Counting House","Counting Houses",5,0,0,1,0,0,0,0,0,0,0,0,0
 "Courtyard","Courtyards",2,0,2,1,0,0,0,0,0,0,0,0,0
-"Curse","Curses",0,0,0,0,0,0,0,0,0,0,0,0,0
+"Curse","Curses",0,0,0,0,0,0,0,0,0,-1,0,0,0
 "Cutpurse","Cutpurses",4,0,0,1,0,0,1,0,0,0,0,2,0
 "Diadem","Diadems","*0",0,0,0,1,0,0,0,0,0,0,"?",0
-"Duchy","Duchies",5,0,0,0,0,1,0,0,0,5,0,0,0
+"Duchy","Duchies",5,0,0,0,0,1,0,0,0,3,0,0,0
 "Duke","Dukes",5,0,0,0,0,1,0,0,0,"?",0,0,0
 "Embargo","Embargoes",2,0,0,1,0,0,0,0,0,0,1,2,0
 "Envoy","Envoys",4,0,4,1,0,0,0,0,0,0,0,0,0

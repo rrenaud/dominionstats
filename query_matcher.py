@@ -48,7 +48,7 @@ class _DeckMatcher(object):
             self.kingdom_match_score = (kingdom_total_matched * 10 +
                                         (has_all * 100))
 
-        _score = query_matcher.name_match(player_deck.Name()) * 10000
+        _score = query_matcher.name_match(player_deck.name()) * 10000
         self.name_match_score = _score
 
     def deck_match_score(self):
@@ -67,10 +67,10 @@ class _DeckMatcher(object):
         ret = ''
         ret += '%s: %d points: ' % (
             game.PlayerDeck.PlayerLink(
-                pd.Name(),
+                pd.name(),
                 '<font color="%s">%s</font>' % (
                     self.player_deck.GameResultColor(),
-                    self._maybe_highlight_name(pd.Name()))
+                    self._maybe_highlight_name(pd.name()))
                 ),
             pd.Points())
         card_freqs = pd.Deck().items()

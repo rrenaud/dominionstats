@@ -18,6 +18,10 @@ def analyze(games):
     return median_margin, perc(first_0), perc(last_0)
 
 def resample(games):
+    """ Get rid of the second player is better skill bias in iso games.
+
+    For each pair of opponents, only the minimum number of games in which each
+    player is first is retained."""
     by_player_pair = collections.defaultdict(list)
     for game_tup in games:
         by_player_pair[tuple(sorted(game_tup.names))].append(game_tup)
