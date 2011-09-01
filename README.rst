@@ -8,7 +8,7 @@ Larry and rspeer.
 
 The code depends on:
 
-- mongodb (http://www.mongodb.org)
+- mongodb (http://www.mongodb.org) (1.5.3+ or later)
 - pymongo (http://api.mongodb.org/python/1.9%2B/index.html)
 - web.py (http://webpy.org)
 - argparse (included in Python 2.7/3.2)

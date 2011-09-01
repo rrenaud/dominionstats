@@ -214,6 +214,7 @@ class Game(object):
     def all_player_names(self):
         return [pd.name() for pd in self.player_decks]
 
+    #TODO: Nonfunctional?
     def get_winning_score(self):
         return self.winning_score
 

@@ -1,11 +1,16 @@
 This requires mongodb, pymongo, and webpy to be installed.
 
 mongodb - http://www.mongodb.org/downloads
-pymongo - http://api.mongodb.org/python/1.9%2B/index.html
-webpy - http://webpy.org/
+pymongo - http://api.mongodb.org/python/1.9%2B/index.html (or see below)
+webpy - http://webpy.org/ (or see below)
 argparse - http://code.google.com/p/argparse/ - included in Python 2.7/3.2
 simplejson - http://pypi.python.org/pypi/simplejson/
 rpy2 - http://pypi.python.org/pypi/rpy2/
+
+Ubuntu Installation Commands for pymongo and webpy:
+sudo pip install pymongo
+sudo easy_install web.py
+
 
 mkdir db
 Run an instance of mongodb with mongod --dbpath=db
