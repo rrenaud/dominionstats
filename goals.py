@@ -14,7 +14,7 @@ import operator
 # NegativeSum: Won with a negative score.
 # Salted Earth: Had a negative score.
 # PileDriver: Owned all copies of a card.
- 
+
 def CheckMatchBOM(g):
     ret = []
     cards_per_player = g.cards_accumalated_per_player()
@@ -42,12 +42,12 @@ def CheckMatchBOMMinator(g):
     for match_dict in cands:
         player = match_dict['player']
         if g.get_player_deck(player).WinPoints() > 1.0:
-            ret.append({'player': player, 
+            ret.append({'player': player,
                         'reason' : match_dict['reason'] + ' and won'
                         })
     return ret
 
-#("I thought it was Golf") Winning with a negative score 
+#("I thought it was Golf") Winning with a negative score
 def CheckMatchGolfer(g):
     if g.any_resigned():
         return []
@@ -69,7 +69,7 @@ def CheckMatchPileDriver(g):
             for card, quant in card_dict.iteritems():
                 if quant == card_info.num_copies_per_game(card, game_size):
                     ret.append(
-                        {'player': player, 
+                        {'player': player,
                          'reason': 'Bought all %d copies of %s' % (
                                 quant, card)}
                         )
@@ -103,7 +103,7 @@ def CheckMatchMrGreenGenes(g):
         if len(victory_quants) >= 6:
             ret.append({
                     'player': player,
-                    'reason': 'Bought %d differently named Victory cards' % 
+                    'reason': 'Bought %d differently named Victory cards' %
                     len(victory_quants)}
                        )
     return ret
@@ -113,7 +113,7 @@ def CheckScore(g, low, high=None):
     for player in g.get_player_decks():
         score = player.points
         if score >= low and (high is None or score < high):
-            ret.append({'player': player.name(), 
+            ret.append({'player': player.name(),
                         'reason': "Scored more than %d points" % low})
     return ret
 
@@ -122,7 +122,7 @@ def CheckScore(g, low, high=None):
 # Royal Heir: Scored 80 points.
 # Monarch: Scored 90 points.
 # Imperial: Scored 100 points.
-# Archon: Scored 110 points.   
+# Archon: Scored 110 points.
 
 def CheckMatchPeer(g):
     return CheckScore(g, 60, 70)
@@ -146,11 +146,12 @@ def GroupFuncs(funcs, group_name):
     for idx, func in enumerate(funcs):
         func.group = group_name
         func.priority = idx
-    
-GroupFuncs([CheckMatchPeer, CheckMatchRegent, CheckMatchRoyalHeir, 
+
+GroupFuncs([CheckMatchPeer, CheckMatchRegent, CheckMatchRoyalHeir,
             CheckMatchMonarch, CheckMatchImperial, CheckMatchArchon], 'vp')
 
-#("Buzzer Beater") Winning by exactly one point 
+# == How the game ends
+#("Buzzer Beater") Winning by exactly one point
 def CheckMatchBuzzerBeater(g):
     scores = {}
     for player in g.get_player_decks():
@@ -158,30 +159,115 @@ def CheckMatchBuzzerBeater(g):
         scores[player.name()] = score
     s_scores = sorted(scores.iteritems(), key=operator.itemgetter(1), reverse=True)
     if len(s_scores)>1 and s_scores[0][1] == s_scores[1][1] + 1:
-        return [{'player': s_scores[0][0], 
+        return [{'player': s_scores[0][0],
                  'reason': "Won by exactly one point"}]
 
-# Bought more than 10 green cards in a turn
-# won without ever buying money
-# played 20 actions in a turn
-# Protego: Reacted to all attacks against you (and at least 5). 
-#("Penny Pincher") Winning by buying out the Coppers 
-#("Estate Sale") Winning by buying out the Estates 
-#("This card sucks?") Winning with an Opening Chancellor 
-#("Bully") Play an attack every turn after the fourth. 
-#("The Biggest Loser") Losing with over 60 points. 
-#("Puppet Master") Play more than 4 Possession in one turn. 
-#("Dominator") Have at least one of each type of available victory card (and at least 1 chip, if available). 
-#buying at least one of every kingdom card in a game
-# gifted a Province or Colony to an opponent (through Masquerade or Ambassador), 
-# Researcher: Acquire 7 Alchemists or Laboratories. 
-# Evil Overlord: Acquire 7 or more Minions. 
-# Badges? We Don't Need No Stinking Badges: Win a game while holding no VP Tokens and your opponent holds 25 or more. 
-# It's Good to be the King: Acquire 4 Throne Rooms or King's Courts. 
-# 99 Problems: Acquire the majority of Harems.
-# Crucio: Use the Torturer three times in a single turn. 
+# Anticlimactic - shared a victory with two or more opponents
+def CheckMatchAnticlimactic(g):
+    num_players = len(g.get_player_decks())
+
+    if num_players == 3:
+        max_score = 1.0
+    elif num_players == 4:
+        max_score = 4.0/3
+    else:
+        return []
+
+    ret = []
+    for player in g.get_player_decks():
+        wp = player.WinPoints()
+        if wp>max_score:
+            return ret
+        elif wp!=0.0:
+            ret.append( {'player': player.name(), 'reason': 'Shared a victory with two or more opponents'} )
+    print ret
+    return ret
+
+
+#("The Biggest Loser") Losing with over 60 points.
+# Surprise Attack - end the game on supply piles when those three piles had totaled at least 5 cards at the start of your turn.
+# Badges? We Don't Need No Stinking Badges: Win a game while holding no VP Tokens and your opponent holds 25 or more.
+
+# == How the game ends
+#("Penny Pincher") Winning by buying out the Coppers
+#("Estate Sale") Winning by buying out the Estates
+
+# == Value of victory points
+
+# Carny - at least 30 VP from Fairgrounds
+# Original suggestion: Blue ribbon - ended game with a Fairgrounds worth 8 VP
+def CheckMatchCarny(g):
+    ret = []
+    for player, deck in g.cards_accumalated_per_player().iteritems():
+        if 'Fairgrounds' not in deck:
+            continue
+        fg_pts = game.score_fairgrounds(deck)
+        if fg_pts >= 30:
+            ret.append( {'player': player, 'reason': '%d VP from Fairgrounds' % fg_pts} )
+    return ret
+
+
+# Gardener - at least 20 VP from Gardens
+# Original suggestion: ended game with a Gardens worth 6 VP
+def CheckMatchGardener(g):
+    ret = []
+    for player, deck in g.cards_accumalated_per_player().iteritems():
+        if 'Gardens' not in deck:
+            continue
+        g_pts = game.score_gardens(deck)
+        if g_pts >= 20:
+            ret.append( {'player': player, 'reason': '%d VP from Gardens' % g_pts} )
+
+    return ret
+
+# Duke of Earl
+# Original suggestion Duchebag :-) - at least 42 points from dukes and duchies alone
+def CheckMatchDukeOfEarl(g):
+    ret = []
+    for player, deck in g.cards_accumalated_per_player().iteritems():
+        if 'Duke' not in deck:
+            continue
+        duke_pts = game.score_duke(deck)
+        duchy_pts = deck['Duchy'] * 5
+        d_pts = duke_pts + duchy_pts
+        if d_pts >= 42:
+            ret.append( {'player': player, 'reason': '%d VP from Dukes and Duchies' % d_pts} )
+    return ret
+
+# == Use of one card in a turn
+#("Puppet Master") Play more than 4 Possession in one turn.
+# Crucio: Use the Torturer three times in a single turn.
 # Imperio: Use Possession three times in a single turn.
+
+# == Every Turn
+# Protego: Reacted to all attacks against you (and at least 5).
+#("Bully") Play an attack every turn after the fourth.
+# Empty Throne Room
+# Empty Kings Court
+
+
+# == Number of Cards acquired
+# King of the Joust - acquire all five prizes
+# Researcher: Acquire 7 Alchemists or Laboratories.
+# Evil Overlord: Acquire 7 or more Minions.
+# It's Good to be the King: Acquire 4 Throne Rooms or King's Courts.
+# 99 Problems: Acquire the majority of Harems.
 # Game of Settlers Anyone?: Acquire 7 of a single Village-type card.
+# won without ever buying money
+#("Dominator") Have at least one of each type of available victory card (and at least 1 chip, if available).
+# buying at least one of every kingdom card in a game
+
+# == Specific Uses
+# Used Possession+Masquerade to send yourself a Province or Colony
+# gifted a Province or Colony to an opponent (through Masquerade or Ambassador),
+# De-model - remodeled a card into a card that costs less
+# Banker - played a Bank worth $10
+# Look Out! - revealed three 6+-cost cards with Lookout
+# Goon Squad - acquired 42 VP tokens from Goons in a single turn
+# played 20 actions in a turn
+
+#("This card sucks?") Winning with an Opening Chancellor
+
 
 def CheckPointsPerTurn(g, low, high=None):
     ret = []
@@ -198,16 +284,16 @@ def CheckPointsPerTurn(g, low, high=None):
             gain = scores[turn_no+1][i] - scores[turn_no][i]
             if gain >= low and (high is None or gain < high):
                 ret.append({
-                        'player': p, 
-                        'reason': "Scored %d or more points in one turn" % 
+                        'player': p,
+                        'reason': "Scored %d or more points in one turn" %
                         low})
     return ret
 
-#Slam: 20 or more points in one turn. 
-#Crash: 30 or more points in one turn. 
-#Charge: 40 or more points in one turn. 
-#KO: 50 or more points in one turn. 
-#Blitz: 60 or more points in one turn. 
+#Slam: 20 or more points in one turn.
+#Crash: 30 or more points in one turn.
+#Charge: 40 or more points in one turn.
+#KO: 50 or more points in one turn.
+#Blitz: 60 or more points in one turn.
 #Onslaught: 70 or more points in one turn.
 def CheckMatchSlam(g):
     return CheckPointsPerTurn(g, 20, 30)
@@ -235,11 +321,11 @@ def CheckMatchMegaTurn(g):
     ret = []
     scores = []
     if 'Colony' in g.get_supply():
-        biggest_victory = 'Colony' 
-    else: 
+        biggest_victory = 'Colony'
+    else:
         biggest_victory = 'Province'
 
-    victory_copies = card_info.num_copies_per_game(biggest_victory, 
+    victory_copies = card_info.num_copies_per_game(biggest_victory,
                                                    len(g.get_player_decks()))
     for turn in g.get_turns():
         new_cards = turn.buys + turn.gains
@@ -247,18 +333,18 @@ def CheckMatchMegaTurn(g):
             continue
         if new_cards.count(biggest_victory) == victory_copies:
             ret.append(
-                {'player': turn.player.name(), 
-                 'reason': "Obtained all of the %s cards in one turn" % 
+                {'player': turn.player.name(),
+                 'reason': "Obtained all of the %s cards in one turn" %
                  biggest_victory})
     return ret
 
-#("Oscar The Grouch") Trash more than 7 cards in one turn 
+#("Oscar The Grouch") Trash more than 7 cards in one turn
 def CheckMatchOscarTheGrouch(g):
     ret = []
     for turn in g.get_turns():
         trashes = len(turn.turn_dict.get('trashes',[]))
         if trashes >= 7:
-            ret.append({'player': turn.player.name(), 
+            ret.append({'player': turn.player.name(),
                         'reason': "Trashed %d cards in one turn" % trashes})
     return ret
 
@@ -272,6 +358,9 @@ for name in dict(globals()):
         if not hasattr(goal_func, 'group'):
             goal_func.group = 'ungrouped'
             goal_func.priority = 0
+
+def GetGoalImageFilename(goal_name):
+    return 'static/images/%s.png' % goal_name
 
 def MaybeRenderGoals(db, norm_target_player):
     goal_matches = list(db.goals.find(
@@ -288,7 +377,7 @@ def MaybeRenderGoals(db, norm_target_player):
             return func.group, func.priority
 
         goal_matches.sort(key = GroupAndPriority)
-        
+
         for goal_match_doc in goal_matches:
             for attainer in goal_match_doc['attainers']:
                 if attainer['player'] == norm_target_player:
@@ -307,10 +396,10 @@ def MaybeRenderGoals(db, norm_target_player):
                         if attainer.has_key('reason'):
                             reason = ' : ' + attainer['reason']
                         freq = goals_achieved_freq[goal_name]
-                        img_loc = 'static/images/%s.png' % goal_name
+                        img_loc = GetGoalImageFilename(goal_name)
                         ret += (
                             '<li style="float: left;">'
-                            '%s<img src="%s" title="%s%s"></a><br>' % 
+                            '%s<img src="%s" title="%s%s"></a><br>' %
                             (game.Game.get_councilroom_link_from_id(game_id),
                              img_loc, goal_name, reason))
                         if freq > 1:
@@ -320,10 +409,18 @@ def MaybeRenderGoals(db, norm_target_player):
     return ret
 
 def print_totals(checker_output, total):
-    for goal_name, output in sorted(checker_output.iteritems(), 
+    for goal_name, output in sorted(checker_output.iteritems(),
                                     key=lambda t: len(t[1]), reverse=True):
-        print "%-15s %8d %5.2f" % (goal_name, len(output), 
+        print "%-15s %8d %5.2f" % (goal_name, len(output),
                                    len(output) / float(total))
+
+def all_goals(game_val):
+    goals = {}
+    for goal_name, goal_checker in goal_check_funcs.iteritems():
+        output = goal_checker(game_val)
+        if output:
+            goals[goal_name] = output
+    return goals
 
 
 def main():
@@ -343,24 +440,22 @@ def main():
         output_collection.remove()
     output_collection.ensure_index('attainers.player')
     output_collection.ensure_index('goal')
-        
+
     print 'starting with id', scanner.get_max_game_id(), 'and num games', \
         scanner.get_num_games()
     for g in utils.progress_meter(scanner.scan(games_collection, {})):
         total_checked += 1
         game_val = game.Game(g)
-        for goal_name, goal_checker in goal_check_funcs.iteritems():
-            output = goal_checker(game_val)
-            if output:
-                for attainer in output:
-                    attainer['player'] = name_merger.norm_name(
-                        attainer['player'])
-                checker_output[goal_name].append(
-                    (game_val.isotropic_url(), output))
-                mongo_val = {'_id': game_val.get_id(),
-                             'goal': goal_name,
-                             'attainers': output}
-                output_collection.save(mongo_val)
+        for goal_name, output in all_goals(game_val).items():
+            for attainer in output:
+                attainer['player'] = name_merger.norm_name(
+                    attainer['player'])
+            checker_output[goal_name].append(
+                (game_val.isotropic_url(), output))
+            mongo_val = {'_id': game_val.get_id(),
+                         'goal': goal_name,
+                         'attainers': output}
+            output_collection.save(mongo_val)
 
     print 'ending with id', scanner.get_max_game_id(), 'and num games', \
         scanner.get_num_games()

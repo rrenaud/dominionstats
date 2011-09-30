@@ -324,20 +324,32 @@ def score_deck(deck_comp):
     """ Given a dict of card, frequency, return the score. """
     ret = 0
     if 'Gardens' in deck_comp:
-        deck_size = sum(deck_comp.itervalues())
-        ret += deck_size / 10 * deck_comp['Gardens']
+        ret += score_gardens(deck_comp)
     if 'Duke' in deck_comp:
-        ret += deck_comp['Duke'] * deck_comp.get('Duchy', 0)
+        ret += score_duke(deck_comp)
     if 'Fairgrounds' in deck_comp:
-        ret += 2 * len(deck_comp.keys()) / 5 * deck_comp['Fairgrounds']
+        ret += score_fairgrounds(deck_comp)
     if 'Vineyard' in deck_comp:
-        ret += sum(deck_comp[card] if card_info.is_action(card) else 0
-                   for card in deck_comp) / 3 * deck_comp['Vineyard']
+        ret += score_vineyard(deck_comp)
 
     for card in deck_comp:
         ret += card_info.vp_per_card(card) * deck_comp[card]
 
     return ret
+
+def score_gardens(deck_comp):
+    deck_size = sum(deck_comp.itervalues())
+    return deck_size / 10 * deck_comp['Gardens']
+
+def score_duke(deck_comp):
+    return deck_comp['Duke'] * deck_comp.get('Duchy', 0)
+
+def score_fairgrounds(deck_comp):
+    return 2 * len(deck_comp.keys()) / 5 * deck_comp['Fairgrounds']
+
+def score_vineyard(deck_comp):
+    return sum(deck_comp[card] if card_info.is_action(card) else 0
+               for card in deck_comp) / 3 * deck_comp['Vineyard']
 
 class GameState(object):
     def __init__(self, game):

@@ -5,6 +5,7 @@ import itertools
 import simplejson as json
 
 import game
+import goals
 import parse_game
 import sofia_predict
 
@@ -21,6 +22,20 @@ def make_graph(label, div_name):
     <td><div id="%s" style="width:1000px;height:250px;"></div></td>
   </tr>
 """ % (label, div_name)
+
+def get_goals(game):
+    glist = goals.all_goals(game)
+    if len(glist)==0:
+        goal_contents = None
+    else:
+        goal_contents = '<table cellpadding="7">'
+        for goal_name, output in glist.items():
+            for attainer in output:
+                reason = attainer['reason']
+                reason = str.lower(reason[0:1]) + reason[1:]
+                goal_contents += '<tr><td><img src="%s" alt="%s"><td><strong>%s</strong><br>%s %s</tr>' % (goals.GetGoalImageFilename(goal_name), goal_name, goal_name, attainer['player'], reason)
+        goal_contents += '</table>'
+    return "<tr><td>goals</td><td>%s</td></tr>"%goal_contents
 
 def annotate_game(contents, game_id, debug=False):
     """ Decorate game contents with some JS that makes a score keeper 
@@ -113,10 +128,10 @@ bug</a> and tell rrenaud@gmail.com<br>''' % game_id
   %s
   %s
   %s
+  %s
 </table>
 """ % (make_graph('score', 'score-graph'), make_graph('money', 'money-graph'),
-       win_prob_graph)
-
+       win_prob_graph, get_goals(game_val))
             ret += '</div>&nbsp<br>\n' * 10 
             ret += '</html>'
     return ret

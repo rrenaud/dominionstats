@@ -17,6 +17,10 @@ def encode_features_for_all_turns(game_val):
 class SofiaWinPredictor:
     def __init__(self, model_name, prediction_type='logistic', 
                  hash_mask_bits=None):
+        self.use_sofia = not subprocess.call(['which', 'sofia-ml'], stdout=subprocess.PIPE)
+        if not self.use_sofia:
+            return
+
         args = ['sofia-ml', 
                 '--model_in', model_name, 
                 '--test_stream',
@@ -27,15 +31,21 @@ class SofiaWinPredictor:
         self.sofia_proc = subprocess.Popen(args, stdin=p, stdout=p)
 
     def predict_all_turns(self, game_val):
-        all_turns_features = encode_features_for_all_turns(game_val)
-        for features in all_turns_features:
-            game_state_features.output_libsvm_state(features, 
-                                                    self.sofia_proc.stdin)
         ret = []
-        for _ in all_turns_features:
-            line = self.sofia_proc.stdout.readline()
-            # print line,
-            ret.append(log_odds_to_prob(float(line)))
+        all_turns_features = encode_features_for_all_turns(game_val)
+
+        if self.use_sofia:
+            for features in all_turns_features:
+                game_state_features.output_libsvm_state(features, 
+                                                        self.sofia_proc.stdin)
+
+            for _ in all_turns_features:
+                line = self.sofia_proc.stdout.readline()
+                # print line,
+                ret.append(log_odds_to_prob(float(line)))
+        else:
+            for _ in all_turns_features:
+                ret.append(0.5)
         return ret
 
 def main():

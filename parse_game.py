@@ -800,9 +800,12 @@ def check_game_sanity(game_val, output):
                                 computed_deck_comp.get(card, 0)))
                     found_something_wrong = True
             if found_something_wrong:
-                output.write('%s %s\n' % (player_deck.name(), game_val.get_id()))
-                output.write(' '.join(game_val.get_supply()))
-                output.write('\n')
+                try:
+                    output.write('%s %s\n' % (player_deck.name(), game_val.get_id()))
+                    output.write(' '.join(game_val.get_supply()))
+                    output.write('\n')
+                except UnicodeEncodeError, e:
+                    None
                 return False
     return True
 
