@@ -280,7 +280,7 @@ def CheckPointsPerTurn(g, low, high=None):
         scores.append(score)
 
     for (i,p) in enumerate(players):
-        for turn_no in range(i, len(scores)-1, len(players)):
+        for turn_no in range(i, len(scores)-1):
             gain = scores[turn_no+1][i] - scores[turn_no][i]
             if gain >= low and (high is None or gain < high):
                 ret.append({
