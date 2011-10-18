@@ -10,9 +10,12 @@ Baron,Barons,4,0,0,1,0,0,0,0,0,0,0,4,1
 Bazaar,Bazaars,5,2,1,1,0,0,0,0,0,0,0,1,0
 Bishop,Bishops,4,0,0,1,0,0,0,0,0,0,1,1,0
 "Black Market","Black Markets",3,0,0,1,0,0,0,0,0,0,0,2,1
+"Border Village","Border Villages",6,2,1,1,0,0,0,0,0,0,0,0,0
 Bridge,Bridges,4,0,0,1,0,0,0,0,0,0,0,1,1
 Bureaucrat,Bureaucrats,4,0,0,1,0,0,1,0,0,0,0,0,0
+Cache,Caches,5,0,0,0,1,0,0,0,0,0,0,3,0
 Caravan,Caravans,4,1,1,1,0,0,0,0,1,0,0,0,0
+Cartographer,Cartographers,5,1,1,1,0,0,0,0,0,0,0,0,0
 Cellar,Cellars,2,1,0,1,0,0,0,0,0,0,0,0,0
 Chancellor,Chancellors,3,0,0,1,0,0,0,0,0,0,0,2,0
 Chapel,Chapels,2,0,0,1,0,0,0,0,0,0,4,0,0
@@ -25,43 +28,55 @@ Coppersmith,Coppersmiths,4,0,0,1,0,0,0,0,0,0,0,0,0
 "Council Room","Council Rooms",5,0,4,1,0,0,0,0,0,0,0,0,1
 "Counting House","Counting Houses",5,0,0,1,0,0,0,0,0,0,0,0,0
 Courtyard,Courtyards,2,0,2,1,0,0,0,0,0,0,0,0,0
+Crossroads,Crossroads,2,?,?,1,0,0,0,0,0,0,0,0,0
 Curse,Curses,0,0,0,0,0,0,0,0,0,-1,0,0,0
 Cutpurse,Cutpurses,4,0,0,1,0,0,1,0,0,0,0,2,0
+Develop,Develops,3,0,0,1,0,0,0,0,0,0,0,0,0
 Diadem,Diadems,*0,0,0,0,1,0,0,0,0,0,0,?,0
 Duchy,Duchies,5,0,0,0,0,1,0,0,0,3,0,0,0
 Duke,Dukes,5,0,0,0,0,1,0,0,0,?,0,0,0
+Duchess,Duchesses,2,0,0,1,0,0,0,0,0,0,0,2,0
 Embargo,Embargoes,2,0,0,1,0,0,0,0,0,0,1,2,0
+Embassy,Embassies,5,0,5,1,0,0,0,0,0,0,0,0,0
 Envoy,Envoys,4,0,4,1,0,0,0,0,0,0,0,0,0
 Estate,Estates,2,0,0,0,0,1,0,0,0,1,0,0,0
 Expand,Expands,7,0,0,1,0,0,0,0,0,0,1,0,0
 Explorer,Explorers,5,0,0,1,0,0,0,0,0,0,0,0,0
-Fairgrounds,Fairgrounds,6,0,0,0,0,0,0,0,0,1,0,0,0
+Fairgrounds,Fairgrounds,6,0,0,0,0,0,0,0,0,?,0,0,0
 Familiar,Familiars,P3,1,1,1,0,0,1,0,0,0,0,0,0
 "Farming Village","Farming Villages",4,2,1,1,0,0,0,0,0,0,0,0,0
+Farmland,Farmlands,6,0,0,0,0,1,0,0,0,2,0,0,0
 Feast,Feasts,4,0,0,1,0,0,0,0,0,0,1,0,0
 Festival,Festivals,5,2,0,1,0,0,0,0,0,0,0,2,1
 "Fishing Village","Fishing Villages",3,2,0,1,0,0,0,0,1,0,0,1,0
 Followers,Followers,*0,0,2,1,0,0,0,0,0,0,0,0,0
+"Fool's Gold","Fool's Golds",2,0,0,0,1,0,0,1,0,0,0,?,0
 Forge,Forges,7,0,0,1,0,0,0,0,0,0,99,0,0
-"Fortune Teller","Fortune Tellers",3,0,0,0,0,0,0,0,0,0,0,2,0
+"Fortune Teller","Fortune Tellers",3,0,0,1,0,0,0,0,0,0,0,2,0
 Gardens,Gardens,4,0,0,0,0,1,0,0,0,?,0,0,0
 "Ghost Ship","Ghost Ships",5,0,2,1,0,0,1,0,0,0,0,0,0
 Gold,Golds,6,0,0,0,1,0,0,0,0,0,0,3,0
 Golem,Golems,P4,0,0,1,0,0,0,0,0,0,0,0,0
 Goons,Goons,6,0,0,1,0,0,1,0,0,0,0,2,1
+Governor,Governors,0,0,0,0,0,0,0,0,0,0,0,0,0
 "Grand Market","Grand Markets",6,1,1,1,0,0,0,0,0,0,0,2,1
 "Great Hall","Great Halls",3,1,1,1,0,1,0,0,0,1,0,0,0
+Haggler,Hagglers,5,0,0,1,0,0,0,0,0,0,0,2,0
 Hamlet,Hamlets,2,2,1,1,0,0,0,0,0,0,0,0,1
 Harem,Harems,6,0,0,0,1,1,0,0,0,2,0,2,0
 Harvest,Harvests,5,0,0,1,0,0,0,0,0,0,0,?,0
 Haven,Havens,2,1,1,1,0,0,0,0,1,0,0,0,0
 Herbalist,Herbalists,2,0,0,1,0,0,0,0,0,0,0,1,1
+Highway,Highways,5,1,1,1,0,0,0,0,0,0,0,0,0
 Hoard,Hoards,6,0,0,0,1,0,0,0,0,0,0,2,0
 "Horn of Plenty","Horns of Plenty",5,0,0,0,1,0,0,0,0,0,0,0,0
 "Horse Traders","Horse Traders",4,0,-2,1,0,0,0,1,0,0,0,3,1
 "Hunting Party","Hunting Parties",5,1,2,1,0,0,0,0,0,0,0,0,0
+"Ill-Gotten Gains","Ill-Gotten Gains",5,0,0,0,1,0,0,0,0,0,0,0,0
+Inn,Inns,5,2,2,1,0,0,0,0,0,0,0,0,0
 Ironworks,Ironworks,4,0,0,1,0,0,0,0,0,0,0,1,0
 Island,Islands,4,0,0,1,0,1,0,0,0,2,0,0,0
+"Jack of All Trades","Jacks of All Trades",4,0,0,1,0,0,0,0,0,0,0,0,0
 Jester,Jesters,5,0,0,1,0,0,1,0,0,0,0,2,0
 "King's Court","King's Courts",7,0,0,1,0,0,0,0,0,0,0,0,0
 Laboratory,Laboratories,5,1,2,1,0,0,0,0,0,0,0,0,0
@@ -69,7 +84,9 @@ Library,Libraries,5,0,3,1,0,0,0,0,0,0,0,0,0
 Lighthouse,Lighthouses,2,1,0,1,0,0,0,1,1,0,0,1,0
 Loan,Loans,3,0,0,0,1,0,0,0,0,0,1,1,0
 Lookout,Lookouts,3,1,0,1,0,0,0,0,0,0,1,0,0
+Mandarin,Mandarins,5,0,0,1,3,0,0,0,0,0,0,3,0
 Market,Markets,5,1,1,1,0,0,0,0,0,0,0,1,1
+Margrave,Margraves,5,0,3,1,0,0,0,0,0,0,0,0,1
 Masquerade,Masquerades,3,0,2,1,0,0,0,0,0,0,1,0,0
 Menagerie,Menageries,3,1,3,1,0,0,0,0,0,0,0,0,
 "Merchant Ship","Merchant Ships",5,0,0,1,0,0,0,0,1,0,0,2,0
@@ -85,6 +102,10 @@ Mountebank,Mountebanks,5,0,0,1,0,0,1,0,0,0,0,2,0
 "Native Village","Native Villages",2,2,0,1,0,0,0,0,0,0,0,0,0
 Navigator,Navigators,4,0,0,1,0,0,0,0,0,0,0,2,0
 Nobles,Nobles,6,2,3,1,0,1,0,0,0,2,0,0,0
+"Noble Brigand","Noble Brigands",4,0,3,1,0,1,1,0,0,0,0,1,0
+"Nomad Camp","Nomad Camps",4,0,0,1,0,0,0,0,0,0,0,2,1
+Oasis,Oasises,3,1,1,1,0,0,0,0,0,0,0,1,0
+Oracle,Oracles,3,0,2,1,0,0,1,0,0,0,0,0,0
 Outpost,Outposts,5,0,0,1,0,0,0,0,1,0,0,0,0
 Pawn,Pawns,2,1,1,1,0,0,0,0,0,0,0,1,1
 "Pearl Diver","Pearl Divers",2,1,1,1,0,0,0,0,0,0,0,0,0
@@ -103,15 +124,19 @@ Remodel,Remodels,4,0,0,1,0,0,0,0,0,0,1,0,0
 "Royal Seal","Royal Seals",5,0,0,0,1,0,0,0,0,0,0,2,0
 Saboteur,Saboteurs,5,0,0,1,0,0,1,0,0,0,0,0,0
 Salvager,Salvagers,4,0,0,1,0,0,0,0,0,0,1,?,1
+Scheme,Schemes,3,1,1,1,0,0,0,0,0,0,0,0,0
 Scout,Scouts,4,1,0,1,0,0,0,0,0,0,0,0,0
 "Scrying Pool","Scrying Pools",P2,1,1,1,0,0,1,0,0,0,0,0,0
 "Sea Hag","Sea Hags",4,0,0,1,0,0,1,0,0,0,0,0,0
 "Secret Chamber","Secret Chambers",2,0,0,1,0,0,0,1,0,0,0,?,0
 "Shanty Town","Shanty Towns",3,2,2,1,0,0,0,0,0,0,0,0,0
+"Silk Road","Silk Roads",4,0,0,0,0,1,0,0,0,?,0,0,0
 Silver,Silvers,3,0,0,0,1,0,0,0,0,0,0,2,0
 Smithy,Smithies,4,0,3,1,0,0,0,0,0,0,0,0,0
 Smugglers,Smugglers,3,0,0,1,0,0,0,0,0,0,0,0,0
+"Spice Merchant","Spice Merchants",4,?,?,1,0,0,0,0,0,0,0,?,?
 Spy,Spies,4,1,1,1,0,0,1,0,0,0,0,0,0
+Stables,Stables,5,0,0,1,0,0,0,0,0,0,0,0,0
 Stash,Stashes,5,0,0,0,1,0,0,0,0,0,0,2,0
 Steward,Stewards,3,0,2,1,0,0,0,0,0,0,2,2,0
 Swindler,Swindlers,3,0,0,1,0,0,1,0,0,0,0,2,0
@@ -122,12 +147,14 @@ Thief,Thieves,4,0,0,1,0,0,1,0,0,0,0,0,0
 Torturer,Torturers,5,0,3,1,0,0,1,0,0,0,0,0,0
 Tournament,Tournaments,4,1,1,1,0,0,0,0,0,0,0,1,0
 "Trade Route","Trade Routes",3,0,0,1,0,0,0,0,0,0,1,?,1
+Trader,Traders,4,0,0,1,0,0,0,1,0,0,1,0,0
 "Trading Post","Trading Posts",5,0,0,1,0,0,0,0,0,0,2,0,0
 Transmute,Transmutes,P,0,0,1,0,0,0,0,0,0,1,0,0
 "Treasure Map","Treasure Maps",4,0,0,1,0,0,0,0,0,0,2,0,0
 Treasury,Treasuries,5,1,1,1,0,0,0,0,0,0,0,1,0
 Tribute,Tributes,5,?,?,1,0,0,0,0,0,0,0,?,0
-"Trusty Steed","Trusty Steed",*0,2,2,1,0,0,0,0,0,0,0,2,0
+"Trusty Steed","Trusty Steeds",*0,?,?,1,0,0,0,0,0,0,0,?,0
+Tunnel,Tunnels,3,0,0,0,0,1,0,1,0,2,0,0,0
 University,Universities,P2,2,0,1,0,0,0,0,0,0,0,0,0
 Upgrade,Upgrades,5,1,1,1,0,0,0,0,0,0,1,0,0
 Vault,Vaults,5,0,2,1,0,0,0,0,0,0,0,?,0
@@ -144,10 +171,3 @@ Woodcutter,Woodcutters,3,0,0,1,0,0,0,0,0,0,0,2,1
 "Worker's Village","Worker's Villages",4,2,1,1,0,0,0,0,0,0,0,0,1
 Workshop,Workshops,3,0,0,1,0,0,0,0,0,0,0,0,0
 "Young Witch","Young Witches",4,0,2,1,0,0,0,0,0,0,0,0,0
-Governor,Governors,0,0,0,0,0,0,0,0,0,0,0,0,0
-"Border Village","Border Villages",6,2,1,1,0,0,0,0,0,0,0,0,0
-"Nomad Camp","Nomad Camps",4,0,0,1,0,0,0,0,0,0,0,2,1
-Trader,Traders,4,0,0,1,0,0,0,1,0,0,1,0,0
-"Fool's Gold","Fool's Golds",2,0,0,0,1,0,0,0,1,0,0,1.5,0
-Mandarin,Mandarins,5,0,0,0,3,0,0,0,0,0,0,0,0
-Crossroads,Crossroads,2,3*,0*,1,0,0,0,0,0,0,0,0,0
