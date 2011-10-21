@@ -4,7 +4,7 @@ Alchemist,Alchemists,P3,1,2,1,0,0,0,0,0,0,0,0,0
 Ambassador,Ambassadors,3,0,0,1,0,0,1,0,0,0,0,0,0
 Apothecary,Apothecaries,P2,1,1,1,0,0,0,0,0,0,0,0,0
 Apprentice,Apprentices,5,1,0,1,0,0,0,0,0,0,1,0,0
-"Bag of Gold","Bag of Gold",*0,1,0,1,0,0,0,0,0,0,0,0,0
+"Bag of Gold","Bags of Gold",*0,1,0,1,0,0,0,0,0,0,0,0,0
 Bank,Banks,7,0,0,0,1,0,0,0,0,0,0,?,0
 Baron,Barons,4,0,0,1,0,0,0,0,0,0,0,4,1
 Bazaar,Bazaars,5,2,1,1,0,0,0,0,0,0,0,1,0
@@ -115,7 +115,7 @@ Peddler,Peddlers,8,1,1,1,0,0,0,0,0,0,0,1,0
 Platinum,Platinums,9,0,0,0,1,0,0,0,0,0,0,5,0
 Possession,Possessions,P6,0,0,1,0,0,0,0,0,0,0,0,0
 Potion,Potions,4,0,0,0,1,0,0,0,0,0,0,P,0
-Princess,Princess,*0,0,0,1,0,0,0,0,0,0,0,0,1
+Princess,Princesses,*0,0,0,1,0,0,0,0,0,0,0,0,1
 Province,Provinces,8,0,0,0,0,1,0,0,0,6,0,0,0
 Quarry,Quarries,4,0,0,0,1,0,0,0,0,0,0,1,0
 Rabble,Rabbles,5,0,3,1,0,0,1,0,0,0,0,0,0
