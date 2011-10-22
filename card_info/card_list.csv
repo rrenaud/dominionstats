@@ -58,7 +58,7 @@ Gardens,Gardens,4,0,0,0,0,1,0,0,0,?,0,0,0
 Gold,Golds,6,0,0,0,1,0,0,0,0,0,0,3,0
 Golem,Golems,P4,0,0,1,0,0,0,0,0,0,0,0,0
 Goons,Goons,6,0,0,1,0,0,1,0,0,0,0,2,1
-Governor,Governors,0,0,0,0,0,0,0,0,0,0,0,0,0
+Governor,Governors,5,1,?,1,0,0,0,0,0,0,?,0,0
 "Grand Market","Grand Markets",6,1,1,1,0,0,0,0,0,0,0,2,1
 "Great Hall","Great Halls",3,1,1,1,0,1,0,0,0,1,0,0,0
 Haggler,Hagglers,5,0,0,1,0,0,0,0,0,0,0,2,0
