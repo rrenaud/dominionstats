@@ -223,10 +223,14 @@ class Game(object):
         yyyymmdd_date = game_id.split('-')[1]
         return yyyymmdd_date
 
-    def date(self):
+    @staticmethod
+    def get_datetime_from_id(game_id):
         from datetime import datetime
 
-        return datetime.strptime(Game.get_date_from_id(self.id), "%Y%m%d")
+        return datetime.strptime(Game.get_date_from_id(game_id), "%Y%m%d")
+
+    def date(self):
+        return Game.get_datetime_from_id(self.id)
 
     def get_id(self):
         return self.id
@@ -237,8 +241,8 @@ class Game(object):
         return 'http://dominion.isotropic.org/gamelog/%s' % path
 
     @staticmethod
-    def get_councilroom_link_from_id(game_id):
-        return '<a href="/game?game_id=%s">' % game_id
+    def get_councilroom_link_from_id(game_id, extra=''):
+        return '<a href="/game?game_id=%s"%s>' % (game_id, extra)
 
     def get_councilroom_open_link(self):
         return self.get_councilroom_link_from_id(self.id)

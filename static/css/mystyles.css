@@ -11,6 +11,7 @@ h1 {
 	margin: 6px;
 	position: relative;
 }
+
 .intro {
 	color: #ffffff;
 	margin-top: -8px;
@@ -23,6 +24,23 @@ h2 {
 	font-weight: 700;
 
 }
+
+h3 {
+	font-family: 'IM Fell DW Pica', serif;
+	font-weight: 700;
+	margin: 5px
+}
+
+table.stats { 
+	text-align: center;
+}
+
+table.stats td {
+	padding:5px 10px;
+}
+
+
+
 h2.treasure {
 	text-shadow: 1px 1px 5px #FFD700;
 }
@@ -35,6 +53,22 @@ h2.action {
 h2.reaction {
 	text-shadow: 1px 1px 5px #70a8e5;
 }
+
+.subhead {
+	font-size: 25px;
+	font-family: 'IM Fell DW Pica', serif;
+	font-weight: 700;
+	text-shadow: 1px 1px 5px #FFD700;
+	margin: 0px 0px 0px 40px;
+}
+
+.search2 {
+	font-size: 15px;
+	font-family: 'IM Fell DW Pica', serif;
+	font-weight: 700;
+	margin: 0px 0px 0px 40px;
+}
+
 .playersearch {
 	position: absolute;
 	top: -8px -moz-initial;
@@ -73,3 +107,36 @@ h2.reaction {
 .blue {
 	background-color: #70a8e5;
 }
+
+.goal_name {
+	font-size: 22px;
+	font-weight: 700;
+	margin: 0px 0px 0px 20px;
+}
+
+.goal_list {
+
+	margin: 0px 0px 0px 20px;
+	display: none;
+	width: 1000px;
+}
+
+.goal_box {
+	text-align: center;
+}
+
+.goal_description {
+font-family: 'Terminal Dosis', sans-serif;
+letter-spacing:-1px;
+}
+
+.goal_date {
+font-family: 'Terminal Dosis', sans-serif;
+	font-variant:small-caps;
+}
+
+a.goal:link, a.goal:visited{
+	text-decoration:none;
+	color: black;
+}
+

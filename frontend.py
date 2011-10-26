@@ -151,7 +151,7 @@ class PlayerJsonPage(object):
 
 def render_record_row(label, rec):
 
-    _row = ('<tr><td>%s</td>' % label,
+    _row = ('<tr><th>%s</th>' % label,
             '<td>%s</td>' % rec.display_win_loss_tie(),
             '<td>%.3f</td></tr>\n' % rec.average_win_points())
 
@@ -160,10 +160,10 @@ def render_record_row(label, rec):
 def render_record_table(table_name, overall_record,
                         keyed_records, row_label_func):
     #TODO: this is a good target for a template like jinja2
-    table = ('<div style="float: left;">',
-             '<h2>%s</h2>' % table_name,
-             '<table border=1>',
-             '<tr><td></td><td>Record</td><td>Average Win Points</td></tr>\n',
+    table = ('<div class="cardborder yellow">',
+             '<h3>%s</h3>' % table_name,
+             '<table class="stats">',
+             '<tr><td></td><th>Record</th><th>Average Win Points</th></tr>\n',
              render_record_row('All games', overall_record),
              ''.join(render_record_row(row_label_func(record_row_cond),
                                        keyed_records[record_row_cond])
@@ -172,6 +172,19 @@ def render_record_table(table_name, overall_record,
              '</div>')
 
     return ''.join(table)
+
+def standard_heading(title):
+	return """<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>%s</title>
+    <link href='static/css/mystyles.css' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=IM+Fell+DW+Pica' 
+	  rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <a href="http://councilroom.com"><h1>CouncilRoom.com</h1></a>""" % title
 
 class PlayerPage(object):
     def GET(self):
@@ -243,20 +256,20 @@ class PlayerPage(object):
         keyed_by_opp_list = keyed_by_opp.items()
         keyed_by_opp_list.sort(key = lambda x: (-len(x[1]), x[0]))
         #TODO: a good choice for a template like jinja2
-        ret = ('<html><head><title>CouncilRoom.com: Dominion Stats: '
-               '%s</title></head>\n' % target_player)
-        ret += '<body><A HREF="/">Back to CouncilRoom.com</A><BR><BR>'
+	ret = standard_heading("CouncilRoom.com: Dominion Stats: %s" % target_player)
 
+	ret += '<form action="http://localhost:8080/player" method="get">'
+	ret += '<span class="subhead">Profile for %s</span>' % target_player
+	ret += '<span class="search2">'
         ret += """
-               Search for another player: <form action='/player' method='get'>
+               Search for another player: 
                <input type="text" name="player" style="width:100px;" />
-               <input type="submit" value="Submit" />
-               </form><hr>
+               <input type="submit" value="View Stats!" />
+               </span></form><br><br>
                """
-        ret += '<h2>CouncilRoom Profile for %s</h2><BR>' % target_player
 
         if len(aliases) > 1:
-            ret += 'Aliases: ' + ', '.join(aliases) + '<br>\n'
+            ret += 'Aliases: ' + ', '.join(aliases) + '\n'
 
 
         ret += render_record_table('Record by game size', overall_record,
