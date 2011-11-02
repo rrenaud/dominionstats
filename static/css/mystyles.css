@@ -95,6 +95,16 @@ h2.reaction {
 	padding: 5px;
 	margin: 3px;
 }
+
+.cardborder2{
+	-moz-border-radius: 9px;
+	border-radius: 9px;
+	-moz-box-shadow: 12px rgba(0,0,0,0.6);
+	box-shadow: 12px rgba(0,0,0,0.6);
+	padding: 5px;
+	margin: 3px;
+}
+
 .yellow {
 	background-color: #FFD700;
 }
@@ -111,11 +121,9 @@ h2.reaction {
 .goal_name {
 	font-size: 22px;
 	font-weight: 700;
-	margin: 0px 0px 0px 20px;
 }
 
 .goal_list {
-
 	margin: 0px 0px 0px 20px;
 	display: none;
 	width: 1000px;
@@ -123,6 +131,10 @@ h2.reaction {
 
 .goal_box {
 	text-align: center;
+	float: left;
+	position: relative;
+	padding: 5px;
+	margin: 3px;
 }
 
 .goal_description {

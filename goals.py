@@ -369,15 +369,25 @@ def MaybeRenderGoals(db, norm_target_player):
     ret = ''
 
     if goal_matches:
-        goals_achieved_freq = collections.defaultdict(int)
         ret += """<script language="javascript"> 
 function toggle(item) {
-	var ele = document.getElementById(item);
-	if(ele.style.display == "block") {
-    	ele.style.display = "none";
+	var list = document.getElementById(item + "_list");
+	var img = document.getElementById(item + "_img");
+	var title = document.getElementById(item + "_title");
+	var caption = document.getElementById(item + "_caption");
+
+	if(list.style.display == "block") {
+        
+    	list.style.display = "none";
+        img.style.display = "block";
+        caption.style.display = "inline";
+        title.style.display = "none";
   	}
 	else {
-		ele.style.display = "block";
+		list.style.display = "block";
+        img.style.display = "inline";
+        caption.style.display = "none";
+        title.style.display = "inline";
 	}
 } 
 </script>"""
@@ -389,46 +399,44 @@ function toggle(item) {
 
         goal_matches.sort(key = GroupPriorityNameAndDate)
 
+        goals_by_name = collections.defaultdict(list)
+        goals_achieved = []
+
         for goal_match_doc in goal_matches:
             for attainer in goal_match_doc['attainers']:
                 if attainer['player'] == norm_target_player:
-                    goals_achieved_freq[goal_match_doc['goal']] += 1
+                    name = goal_match_doc['goal']
+                    goals_by_name[name].append((attainer.get('reason', ''), goal_match_doc['_id']))
+                    if name not in goals_achieved:
+                        goals_achieved.append(name)
 
-        seen_goal_yet = set()
-        ret += '<ul style="list-style-type: none;">\n'
-        for goal_match_doc in goal_matches:
-            for attainer in goal_match_doc['attainers']:
-                if attainer['player'] == norm_target_player:
-                    goal_name = goal_match_doc['goal']
-                    img = GetGoalImageFilename(goal_name)
-                    if goal_name not in seen_goal_yet:
-                        if len(seen_goal_yet) > 0:
-                            ret += "</div>"
-                            ret += '<div style="clear: both;">&nbsp;</div>'
-                        freq = goals_achieved_freq[goal_name]
-                        ret += '<li><span onclick="javascript:toggle(\'%s\');" style="cursor:pointer">'%goal_name
-                        ret += '<img src="%s" title="%s"  style="vertical-align: middle">' % (img, goal_name)
-                        ret += '<span class="goal_name">%s</span>' % goal_name
-                        ret += '<span class="goal_name">x%d</span>' % (freq)
-                        ret += '</span>'
-                        ret += '<div id="%s" class="goal_list"><br>' % goal_name
-                        seen_goal_yet.add(goal_name)
+        ret += '<div style="width: 1000px">'
+        for goal_name in goals_achieved:
+            img = GetGoalImageFilename(goal_name)
+            found_goals = goals_by_name[goal_name]
+            freq = len(found_goals)
 
-                    game_id = goal_match_doc['_id']
-                    link = game.Game.get_councilroom_link_from_id(game_id, ' class="goal"')
-                    date = game.Game.get_datetime_from_id(game_id).strftime("%d %b %Y")
-                    
-                    reason = attainer.get('reason', '')
+            ret += '<div onclick="javascript:toggle(\'%s\');" style="cursor:pointer; display: inline-block" class="cardborder2 blue" id="%s">' % (goal_name, goal_name)
+            ret += '<span style="display: inline-block; text-align: center">'
+            ret += '<img src="%s" title="%s x%d" style="vertical-align: middle; display:block" id="%s_img">' % (img, goal_name, freq, goal_name)
+            ret += '<span style="font-size: 14; font-weight: 700; display: block;" id="%s_caption">%s</span>' % (goal_name, goal_name)
+            ret += '</span>'
+            ret += '<span class="goal_name" id="%s_title" style="display: none">&nbsp; %s &nbsp; x%d</span>' % (goal_name, goal_name, freq)
 
-                    ret += '<table class="goal_box cardborder blue">'
-                    ret += '<td>%s<img src="%s" title="%s" width="50px"></a>' % (link, img, goal_name)
-                    ret += '<td width="100px">%s' % link
-                    ret += '<span class="goal_description">%s</span><br>' % reason
-                    ret += '<span class="goal_date">%s</span></a>' % date
-                    ret += '</table>'
-                        
+            ret += '<div id="%s_list" class="goal_list"><br>' % goal_name
+
+            for (reason, game_id) in found_goals:
+                link = game.Game.get_councilroom_link_from_id(game_id, ' class="goal"')
+                date = game.Game.get_datetime_from_id(game_id).strftime("%d %b %Y")
+                ret += '<table class="goal_box">'
+                ret += '<td>%s<img src="%s" title="%s" width="50px"></a>' % (link, img, goal_name)
+                ret += '<td width="100px">%s' % link
+                ret += '<span class="goal_description">%s</span><br>' % reason
+                ret += '<span class="goal_date">%s</span></a>' % date
+                ret += '</table>'
+
+            ret += '</div></div>'
         ret += '</div>'
-        ret += '</ul>'
         ret += '<div style="clear: both;">&nbsp;</div>'
     return ret
 
