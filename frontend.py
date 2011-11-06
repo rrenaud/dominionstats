@@ -413,10 +413,12 @@ class GoalsPage(object):
             lambda: collections.defaultdict(int))
 
         for goal_doc in db.goals.find():
-            goal_name = goal_doc['goal']
-            goal_freq[goal_name] += 1
-            for attainer_dict in goal_doc['attainers']:
-                attainments_by_player[attainer_dict['player']][goal_name] += 1
+            for goal in goal_doc['goals']:
+                player = goal['player']
+                goal_name = goal['goal_name']
+
+                goal_freq[goal_name] += 1
+                attainments_by_player[player][goal_name] += 1
 
         player_scores = {}
         tot_games = float(db.games.count())

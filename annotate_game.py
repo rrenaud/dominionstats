@@ -24,16 +24,17 @@ def make_graph(label, div_name):
 """ % (label, div_name)
 
 def get_goals(game):
-    glist = goals.all_goals(game)
+    glist = goals.check_goals(game)
     if len(glist)==0:
         goal_contents = None
     else:
         goal_contents = '<table cellpadding="7">'
-        for goal_name, output in glist.items():
-            for attainer in output:
-                reason = attainer['reason']
-                reason = str.lower(reason[0:1]) + reason[1:]
-                goal_contents += '<tr><td><img src="%s" alt="%s"><td><strong>%s</strong><br>%s %s</tr>' % (goals.GetGoalImageFilename(goal_name), goal_name, goal_name, attainer['player'], reason)
+        for goal in glist:
+            goal_name = goal['goal_name']
+            player = goal['player']
+            reason = goal['reason']
+            reason = str.lower(reason[0:1]) + reason[1:]
+            goal_contents += '<tr><td><img src="%s" alt="%s"><td><strong>%s</strong><br>%s %s</tr>' % (goals.GetGoalImageFilename(goal_name), goal_name, goal_name, player, reason)
         goal_contents += '</table>'
     return "<tr><td>goals</td><td>%s</td></tr>"%goal_contents
 
