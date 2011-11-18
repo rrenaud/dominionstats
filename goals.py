@@ -195,7 +195,8 @@ def CheckMatchCarny(g):
     """Obtained at least 30 VP from Fairgrounds"""
     # Original suggestion: Blue ribbon - ended game with a Fairgrounds worth 8 VP
     ret = []
-    for player, deck in g.cards_accumalated_per_player().iteritems():
+    for pdeck in g.get_player_decks():
+        (player, deck) = (pdeck.player_name, pdeck.deck)
         if 'Fairgrounds' not in deck:
             continue
         fg_pts = game.score_fairgrounds(deck)
@@ -207,7 +208,8 @@ def CheckMatchGardener(g):
     """Obtained at least 20 VP from Gardens"""
     # Original suggestion: ended game with a Gardens worth 6 VP
     ret = []
-    for player, deck in g.cards_accumalated_per_player().iteritems():
+    for pdeck in g.get_player_decks():
+        (player, deck) = (pdeck.player_name, pdeck.deck)
         if 'Gardens' not in deck:
             continue
         g_pts = game.score_gardens(deck)
@@ -220,7 +222,8 @@ def CheckMatchDukeOfEarl(g):
     """Obtained at least 42 points from Dukes and Duchies"""
     # originally suggested as Duchebag
     ret = []
-    for player, deck in g.cards_accumalated_per_player().iteritems():
+    for pdeck in g.get_player_decks():
+        (player, deck) = (pdeck.player_name, pdeck.deck)
         if 'Duke' not in deck:
             continue
         duke_pts = game.score_duke(deck)
