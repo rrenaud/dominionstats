@@ -33,6 +33,7 @@ urls = (
   '/win_weighted_accum_turn.html', 'WinWeightedAccumTurnPage',
   '/popular_buys', 'PopularBuyPage',
   '/openings', 'OpeningPage',
+  '/leaderboard', 'LeaderboardPage',
   '/goals', 'GoalsPage',
   '/(.*)', 'StaticPage'
 )
@@ -93,7 +94,7 @@ class OpeningPage(object):
         if 'card' in query_dict:
             selected_card = query_dict['card']
 
-        results = db.trueskill_openings.find({'_id': {'$regex': '^open:'}})
+        results = db.trueskill_openings_dev.find({'_id': {'$regex': '^open:'}})
         openings = list(results)
         card_list = card_info.OPENING_CARDS
         def split_opening(o):
@@ -130,6 +131,17 @@ class OpeningPage(object):
 
         render = web.template.render('')
         return render.openings_template(openings, card_list, selected_card)
+
+class LeaderboardPage(object):
+    def GET(self):
+        web.header("Content-Type", "text/html; charset=utf-8")  
+        query_dict = dict(urlparse.parse_qsl(web.ctx.env['QUERY_STRING']))
+        db = utils.get_mongo_database()
+
+        ratings = list(db.trueskill_players_dev.find(
+            {'floor': {'$gt': 0}}).sort([('floor', -1)]).limit(10000))
+        render = web.template.render('')
+        return render.leaderboard_template(ratings)
 
 class PlayerJsonPage(object):
     def GET(self):
@@ -198,6 +210,8 @@ class PlayerPage(object):
         norm_target_player = norm_name(target_player)
         games_coll = games.find({'players': norm_target_player})
 
+        rating = db.trueskill_players_dev.find_one({'_id': target_player})
+
         keyed_by_opp = collections.defaultdict(list)
         real_name_usage = collections.defaultdict(
             lambda: collections.defaultdict(int))
@@ -265,8 +279,14 @@ class PlayerPage(object):
                </span></form><br><br>
                """
 
+        if rating:
+            ret += '<b>CouncilRoom rating</b>: '
+            ret += '%3.3f &plusmn; %3.3f (Level %d)' % (
+                rating['mu'], rating['sigma']*3, int(max(0, rating['floor']))
+            )
         if len(aliases) > 1:
             ret += 'Aliases: ' + ', '.join(aliases) + '\n'
+        ret += '<div style="clear: both;">&nbsp;</div>'
 
 
         ret += render_record_table('Record by game size', overall_record,

@@ -310,7 +310,7 @@ def SetParameters(beta=None, epsilon=None, draw_probability=None,
   global BETA, EPSILON, GAMMA
 
   if beta is None:
-    BETA = INITIAL_SIGMA / 2.0
+    BETA = INITIAL_SIGMA * 3.0 / 2.0
   else:
     BETA = beta
 
@@ -333,12 +333,11 @@ class SkillInfo:
     self.mu = mu
     self.sigma = sigma
     self.gamma = gamma
+    self.floor = mu - 3*sigma
+    self.ceil = mu + 3*sigma
 
 def default_missing_func(name):
-  if name.startswith('open:'):  # this is ugly ;(
-    return SkillInfo(0.0, 25./3, 0)
-  else:
-    return SkillInfo(25.0, 25./3, 25./300)
+  return SkillInfo(25.0, 25./3, 25./300)
 
 class SkillTable:
   def __init__(self, missing_func=None):
@@ -367,6 +366,12 @@ class SkillTable:
 
   def set_sigma(self, player, sigma):
     self._get_skill_info(player).sigma = sigma
+    self.update_floor_and_ceil(player)
+  
+  def update_floor_and_ceil(self, player):
+    skill_info = self._get_skill_info(player)
+    skill_info.ceil = skill_info.mu + 3*skill_info.sigma
+    skill_info.floor = skill_info.mu - 3*skill_info.sigma
 
   def ordered_skills(self):
     return sorted(self.skill_infos.items(), key = lambda x: -x[1].mu)

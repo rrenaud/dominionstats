@@ -8,6 +8,7 @@ import itertools
 import card_info as ci
 import game
 import random
+import sys
 import utils
 
 def nice_feature_name(n):
@@ -28,7 +29,7 @@ def deck_size_deck_extractor(deck_comp, game_state, player):
     return [sum(deck_comp.itervalues())]
 
 def action_balance_deck_extractor(deck_comp, game_state, player):
-    ret = 0
+    ret = 0.0
     for card, quant in deck_comp.iteritems():
         ret += (ci.num_plus_actions(card) - ci.is_action(card)) * quant
     return [ret / (sum(deck_comp.itervalues()) or 1)]
@@ -122,6 +123,27 @@ def output_state(state, output_file, sep=' '):
     output_file.write(formatted_str)
     output_file.write('\n')
 
+def output_vw_state(state, output_file):
+    named_features = zip(all_feature_names, state)
+    feature_str = ' '.join('%s:%s' % (feature, value)
+                           for feature, value in named_features
+                           if value and feature != "outcome_")
+    outcome = state[-1]*2-1
+    uid = random_id()
+    formatted_str = "%s 1.0 %s|Features %s" % (outcome, uid, feature_str)
+    print >> output_file, formatted_str
+
+def convert_r_to_vw(input_file, output_file):
+    global all_feature_names
+    skipped_first = False
+    for line in input_file:
+        if skipped_first:
+            state = map(int, line.strip().split())
+            output_vw_state(state, output_file)
+        else:
+            all_feature_names = line.strip().split()
+            skipped_first = True
+
 def get_all_feature_names():
     header = feature_names(_common_extractor_list)
     
@@ -131,6 +153,10 @@ def get_all_feature_names():
        
     header.append('outcome_')
     return header
+all_feature_names = get_all_feature_names()
+
+def random_id():
+    return hex(random.randrange(0, 1<<32))[2:]
 
 def write_r_header(output_file):
     outputted = ' '.join(get_all_feature_names()) + '\n'
@@ -163,6 +189,7 @@ def main():
     # limit = 10000
     r_output_file = open(prefix + 'r_format.data', 'w')
     weka_output_file = open(prefix + 'games.arff', 'w')
+    vw_output_file = open(prefix + 'games.vw.txt', 'w')
     librf_output_file = open(prefix + 'librf_games.csv', 'w')
     librf_labels_file = open(prefix + 'librf_games_labels.txt', 'w')
     libsvm_output_file = open(prefix + 'libsvm_games.txt', 'w')
@@ -170,9 +197,8 @@ def main():
     write_weka_header(weka_output_file, force_classification)
     
     for raw_game in utils.progress_meter(
-        c.test.games.find(
-            {'_id': {'$gt': 'game-20110715'} }
-            ), 100):
+        c.test.games.find()
+        ):
         g = game.Game(raw_game)
         if g.dubious_quality() or len(g.get_player_decks()) != 2:
             continue
@@ -192,10 +218,17 @@ def main():
                 #librf_labels_file.write('%d\n' % encoded_state[-1])
 
                 output_libsvm_state(encoded_state, libsvm_output_file)
+                output_vw_state(encoded_state, vw_output_file)
         #else:
         #    assert False, ('did not find turn %d in %s' % (saved_turn_ind,
                                                            # game.get_id()))
 
+def convert_main():
+    infile = open('data/r_format.data')
+    outfile = open('data/games.vw', 'w')
+    convert_r_to_vw(infile, outfile)
+    infile.close()
+    outfile.close()
                 
 if __name__ == '__main__':
     main()

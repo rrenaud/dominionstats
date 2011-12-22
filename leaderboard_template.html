@@ -1,0 +1,60 @@
+$def with ( ratings )
+<html><head>
+<title>CouncilRoom Leaderboard</title>
+<style>
+body { font-family: sans-serif; color: #222; }
+table { border-collapse: collapse; }
+td { padding: 3px 15px; }
+tr.level td { border-top: 1px solid #ccc; }
+tr.level td.level { font-weight: bold; color: #000; }
+.lremind { color: #ccc; }
+.c { text-align: center; }
+.up { color: #0c0; font-size: 84%; text-align: center; padding-left: 2ex; }
+.down { color: #c00; font-size: 84%; text-align: center; padding-left: 2ex; }
+b { font-weight: bold; color: #000; }
+.sm { font-size: 70.7%; }
+.c2 { text-align: center; font-size: 70.7%; color: #339; }
+.indeterminate { background-color: #ccc; }
+</style>
+</head>
+<body>
+<h1>CouncilRoom Leaderboard</h1>
+<p>This is a variation on the
+<a href="http://dominion.isotropic.org/leaderboard">Isotropic leaderboard</a>,
+tracking all games that appear on CouncilRoom.com.</p>
+<p>The main differences are that we don't throw out games after 30 days
+(instead, we gradually increase the uncertainty due to old games), and
+we track players by name instead of by logged-in account.</p>
+$ samelevel = 0
+$ prevlevel = '-'
+$ rank = 0
+<table>
+<tr><th></th><th>skill range</th><th>rank</th><th>cards</th></tr>
+$for rating in ratings:
+    $code:
+        level = max(int(rating['floor']), 0)
+        if level == prevlevel:
+            samelevel += 1
+        else:
+            samelevel = 0
+        rank += 1
+    $if (samelevel == 0):
+        <tr class='level'><td class='level'>Level $level</td>
+    $elif (samelevel % 10 == 0):
+        <tr><td class='lremind'>Level $level</td>
+    $else:
+        <tr><td></td>
+    $ prevlevel = level
+    <td>
+    $("%3.3f" % rating['mu'])
+    &plusmn;
+    $("%3.3f" % (rating['sigma']*3))
+    </td>
+    <td class='c2'>
+    $rank
+    </td>
+    <td>$rating['_id']</td>
+    </tr>
+</table>
+</body>
+</html>
