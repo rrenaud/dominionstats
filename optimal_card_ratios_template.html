@@ -1,0 +1,62 @@
+$def with ( card_list, card_x, card_y, final_table, progressive_table )
+<html><head>
+<title>Optimal Card Ratios</title>
+<style type="text/css">
+table {
+    border-width: 1px;
+    border-spacing: 0px;
+    border-style: outset;
+    border-color: gray;
+    border-collapse: separate;
+}
+table th {
+    border-width: 1px;
+    padding: 1px;
+    border-style: inset;
+    border-color: gray;
+}
+table td {
+    border-width: 1px;
+    padding: 1px;
+    border-style: inset;
+    border-color: gray;
+}
+.num_games {
+    font-size: xx-small;
+}
+</style>
+</head>
+<body>
+    <form action="/optimal_card_ratios" method="get">
+    <label for="card">X-axis card:</label>
+    <select name="card_x">
+    $for card in card_list:
+        $if card == card_x:
+            <option selected>$card</option>
+        $else:
+            <option>$card</option>
+    </select>
+
+    <label for="card">Y-axis card:</label>
+    <select name="card_y">
+    $for card in card_list:
+        $if card == card_y:
+            <option selected>$card</option>
+        $else:
+            <option>$card</option>
+    </select>
+
+    <input type="submit" value="Go">
+    </form>
+
+    X-axis card: $card_x<br>
+    Y-axis card: $card_y<br>
+
+    <h2>Final</h2>
+    $:final_table
+
+    <h2>Progressive</h2>
+    $:progressive_table
+</body>
+</html>
+

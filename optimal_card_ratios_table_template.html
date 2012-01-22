@@ -1,0 +1,25 @@
+$def with ( min_x, max_x, min_y, max_y, min_mean, max_mean, x_to_y_to_data, num_games, num_games_threshold )
+# games: $num_games<br>
+# games threshold: $num_games_threshold<br>
+<table>
+    $for y in xrange(max_y, min_y-1, -1):
+        <tr>
+        <th>$y</th>
+        $for x in xrange(min_x, max_x+1):
+            $if x_to_y_to_data.has_key(x) and x_to_y_to_data[x].has_key(y):
+                $ mean, rendered_interval, frequency = x_to_y_to_data[x][y]
+                <td style="background-color: $( get_background_color(min_mean, max_mean, mean) )">
+                $:rendered_interval
+                <span class="num_games">$frequency</span>
+                </td>
+            $else:
+                <td></td>
+        </tr>
+
+    <tr>
+    <th></th>
+    $for x in xrange(min_x, max_x+1):
+        <th>$x</th>
+    </tr>
+</table>
+

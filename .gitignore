@@ -7,3 +7,6 @@ static/output
 parsed_out
 conf.ini
 data
+static/scrape_data
+db
+

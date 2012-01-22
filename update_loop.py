@@ -8,20 +8,21 @@ import sys
 utils.ensure_exists('static/status')
 
 cmds = [
-    ('python scrape.py', False),             # downloads gamelogs from isotropic
-    ('python parse_game.py', True),        # parses data into useable format
-    ('python load_parsed_data.py', False),  # loads data into database
-    ('python analyze.py', False),            # produces data for graphs
-    ('python goals.py', False),
-    ('python count_buys.py', False),
-    ('python run_trueskill.py', False)
+    'python scrape.py',            # downloads gamelogs from isotropic
+    'python parse_game.py',        # parses data into useable format
+    'python load_parsed_data.py',  # loads data into database
+    'python analyze.py',           # produces data for graphs
+    'python goals.py',
+    'python count_buys.py',
+    'python run_trueskill.py',
+    'python optimal_card_ratios.py',
 ]
 
 extra_args = sys.argv[1:]
 
 # should think about how to parrallelize this for multiprocessor machines.
 while True:
-    for cmd, spittable in cmds:
+    for cmd in cmds:
         status_fn = (cmd.replace(' ', '_') + '-' + 
                      date.today().isoformat() + '-' +
                      time.strftime('%H:%M:%S') + '.txt')
@@ -31,3 +32,4 @@ while True:
         os.system('mv %s static/status' % status_fn)
     print 'sleeping'
     time.sleep(60*15)  # try to update every 15 mins
+
