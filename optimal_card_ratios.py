@@ -153,18 +153,20 @@ def main():
     database = conn.test
     games = database.games
     collection = database.optimal_card_ratios
+    db_tracker = None
 
     scanner = incremental_scanner.IncrementalScanner('optimal_card_ratios', database)
 
     if not args.incremental:
         scanner.reset()
 
-    db_tracker = DBCardRatioTrackerManager(collection, args.incremental)
-
     print scanner.status_msg()
 
     total_checked = 0
-    for game in utils.progress_meter(scanner.scan(games, {})):
+    for game in scanner.scan(games, {}):
+        if not db_tracker:
+            db_tracker = DBCardRatioTrackerManager(collection, args.incremental)
+
         total_checked += 1
 
         result = process_game(Game(game))
@@ -172,12 +174,16 @@ def main():
             db_tracker.integrate_results('final', final_ratio_dict, win_points)
             db_tracker.integrate_results('progressive', progressive_ratio_dict, win_points)
 
+        if total_checked % 1000 == 0:
+            print total_checked
+
         if args.max_games >= 0 and total_checked >= args.max_games:
             break
 
     print scanner.status_msg()
 
-    db_tracker.save()
+    if db_tracker:
+        db_tracker.save()
     scanner.save()
 
 if __name__ == '__main__':
