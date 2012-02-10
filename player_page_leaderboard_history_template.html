@@ -1,0 +1,20 @@
+$def with ( raw_history_data )
+
+<h2>Leaderboard History</h2>
+
+<div id="level_graph" style="width:1000;height:250;"></div>
+<div id="num_games_graph" style="width:1000;height:250;"></div>
+
+<script language="javascript" type="text/javascript" src="static/flot/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="static/flot/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="static/leaderboard_history.js"></script>
+
+<script language="javascript" type="text/javascript">
+jQuery(document).ready(function () {
+    var raw_history_data = $:raw_history_data;
+    var entries = LeaderboardHistory.process_raw_history_data(raw_history_data);
+    LeaderboardHistory.plot_graph(entries, 'Level', 'level_graph', function (entry) { return entry.skill_mean - entry.skill_error; });
+    LeaderboardHistory.plot_graph(entries, '# Games', 'num_games_graph', function (entry) { return entry.eligible_games_played; });
+});
+</script>
+

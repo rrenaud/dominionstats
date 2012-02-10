@@ -62,6 +62,11 @@ h2.reaction {
 	margin: 0px 0px 0px 40px;
 }
 
+.level {
+    font-size: 15px;
+    margin: 0px 0px 0px 15px;
+}
+
 .search2 {
 	font-size: 15px;
 	font-family: 'IM Fell DW Pica', serif;

@@ -177,13 +177,13 @@ def render_record_table(table_name, overall_record,
     return ''.join(table)
 
 def standard_heading(title):
-	return """<html>
+    return """<html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>%s</title>
     <link href='static/css/mystyles.css' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=IM+Fell+DW+Pica' 
-	  rel='stylesheet' type='text/css'>
+      rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css'>
   </head>
   <body>
@@ -200,6 +200,9 @@ class PlayerPage(object):
         games = db.games
         norm_target_player = norm_name(target_player)
         games_coll = games.find({'players': norm_target_player})
+
+        leaderboard_history = db.leaderboard_history.find_one({'_id': norm_target_player})
+        leaderboard_history = leaderboard_history['history'] if leaderboard_history else None
 
         keyed_by_opp = collections.defaultdict(list)
         real_name_usage = collections.defaultdict(
@@ -256,13 +259,20 @@ class PlayerPage(object):
         keyed_by_opp_list = keyed_by_opp.items()
         keyed_by_opp_list.sort(key = lambda x: (-len(x[1]), x[0]))
         #TODO: a good choice for a template like jinja2
-	ret = standard_heading("CouncilRoom.com: Dominion Stats: %s" % target_player)
+        ret = standard_heading("CouncilRoom.com: Dominion Stats: %s" % target_player)
 
-	ret += '<form action="/player" method="get">'
-	ret += '<span class="subhead">Profile for %s</span>' % target_player
-	ret += '<span class="search2">'
+        ret += '<form action="/player" method="get">'
+        ret += '<span class="subhead">Profile for %s</span>' % target_player
+
+        leaderboard_history_most_recent = leaderboard_history[-1] if leaderboard_history else None
+        if leaderboard_history_most_recent:
+            level = leaderboard_history_most_recent[1] - leaderboard_history_most_recent[2]
+            level = int(max(math.floor(level), 0))
+            ret += '<span class="level">Level ' + str(level) + '</span>'
+
+        ret += '<span class="search2">'
         ret += """
-               Search for another player: 
+               Search for another player:
                <input type="text" name="player" style="width:100px;" />
                <input type="submit" value="View Stats!" />
                </span></form><br><br>
@@ -287,6 +297,10 @@ class PlayerPage(object):
         ret += goals.MaybeRenderGoals(db, norm_target_player)
 
         ret += '<A HREF="/popular_buys?player=%s"><h2>Stats by card</h2></A><BR>\n' % target_player
+
+        if leaderboard_history:
+            render = web.template.render('')
+            ret += str(render.player_page_leaderboard_history_template(json.dumps(leaderboard_history)))
 
         ret += '<h2>Most recent games</h2>\n'
         game_list.sort(key = game.Game.get_id, reverse = True)
