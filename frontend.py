@@ -423,42 +423,31 @@ class GoalsPage(object):
     def GET(self):
         web.header("Content-Type", "text/html; charset=utf-8")
         db = utils.get_mongo_database()
+        gstats_db = db.goal_stats
+        goal_stats = list(gstats_db.find())
 
-        goal_freq = collections.defaultdict(int)
-        attainments_by_player = collections.defaultdict(
-            lambda: collections.defaultdict(int))
+        n = db.games.count()
 
-        for goal_doc in db.goals.find():
-            for goal in goal_doc['goals']:
-                player = goal['player']
-                goal_name = goal['goal_name']
-
-                goal_freq[goal_name] += 1
-                attainments_by_player[player][goal_name] += 1
-
-        player_scores = {}
-        tot_games = float(db.games.count())
-        for player in attainments_by_player:
-            score = 0
-            player_goal_freqs = attainments_by_player[player]
-            for goal in player_goal_freqs:
-                global_rareness = tot_games / goal_freq[goal]
-                player_goal_freq = player_goal_freqs[goal]
-                score += global_rareness / (1 + math.exp(-player_goal_freq))
-            player_scores[player] = score
-
-        goal_freq = goal_freq.items()
-        goal_freq.sort(key = lambda x: x[1])
-
-        ret = ''
-        for goal, freq in goal_freq:
-            ret += goal + ' ' + str(freq) + '<br>'
-
-        ret += '<br>'
-        player_scores = player_scores.items()
-        player_scores.sort(key = lambda x: -x[1])
-        for player, score in player_scores[:10]:
-            ret += player + ' ' + '%.3f' % score + '<br>'
+        ret = standard_heading("CouncilRoom.com: Goal Stats")
+        ret += '<span class="subhead">Goal Stats</span>\n<p>\n'
+        ret += '<table width="50%">'
+        ret += '<tr><td><th>Goal Name<th width="1%">Total Times Achieved<th width="1%">% Occurrence<th>Description<th>Leaders'
+        for g in sorted(goal_stats, key=lambda k: k['count'], reverse=True):
+            goal_name = g['_id']
+            ret += '<tr><td>'
+            ret += '<img src="%s" alt="%s"/>' % (goals.GetGoalImageFilename(goal_name), goal_name)
+            ret += '<th>%s<td align="right">%d<td align="right">%.2f<td align="center">%s' % (goal_name, g['count'], g['count']*100./n, goals.GetGoalDescription(goal_name))
+            rank = 1
+            ret += '<td>'
+            for (players, count) in g['top']:
+                if len(players)==1:
+                    ret += "%d) %s (%d)<br />" % (rank, game.PlayerDeck.PlayerLink(players[0]), count)
+                else:
+                    ret += "%d) %d tied with %d (" % (rank, len(players), count)
+                    links = [game.PlayerDeck.PlayerLink(player) for player in players]
+                    ret += ', '.join(links)
+                    ret += ')<br/>'
+                rank += len(players)
 
         return ret
 

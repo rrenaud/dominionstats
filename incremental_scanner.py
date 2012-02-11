@@ -17,6 +17,9 @@ class IncrementalScanner(object):
     def get_max_game_id(self):
         return self.max_game_id
 
+    def set_max_game_id(self, new_id):
+        self.max_game_id = new_id
+
     def get_num_games(self):
         return self.num_games
 

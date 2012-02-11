@@ -78,6 +78,8 @@ def CheckMatchPileDriver(g):
 
 def CheckMatchOneTrickPony(g):
     """Bought only one type of action"""
+    if g.any_resigned():
+        return []
     accumed_per_player = g.cards_accumalated_per_player()
     ret = []
     for player, card_dict in accumed_per_player.iteritems():
@@ -154,6 +156,8 @@ GroupFuncs([CheckMatchPeer, CheckMatchRegent, CheckMatchRoyalHeir,
 # == How the game ends
 def CheckMatchBuzzerBeater(g):
     """Won by exactly one point"""
+    if g.any_resigned():
+        return []
     scores = {}
     for player in g.get_player_decks():
         score = player.points
@@ -188,6 +192,15 @@ def CheckMatchAnticlimactic(g):
 
     return ret
 
+def CheckMatchTheFlash(g):
+    """Won in less than 10 turns"""
+    if g.any_resigned():
+        return []
+    for player in g.get_player_decks():
+        if player.WinPoints() > 1.0 and player.num_turns() < 10:
+            return [achievement(player.name(), "Won in %d turns" % player.num_turns())]
+
+    return []
 
 #("The Biggest Loser") Losing with over 60 points.
 # Surprise Attack - end the game on supply piles when those three piles had totaled at least 5 cards at the start of your turn.
@@ -195,9 +208,9 @@ def CheckMatchAnticlimactic(g):
 
 #("Penny Pincher") Winning by buying out the Coppers
 #("Estate Sale") Winning by buying out the Estates
+# Denied: Won the game by ending it on piles after a turn featuring 10 or more buys
 
 # == Value of victory points
-
 def CheckMatchCarny(g):
     """Obtained at least 30 VP from Fairgrounds"""
     # Original suggestion: Blue ribbon - ended game with a Fairgrounds worth 
@@ -244,6 +257,23 @@ def CheckMatchDukeOfEarl(g):
                                    d_pts, d_pts))
     return ret
 
+def CheckMatchSilkTrader(g):
+    """ Obtained at least 20 points from Silk Road"""
+    ret = []
+    for pdeck in g.get_player_decks():
+        (player, deck) = (pdeck.player_name, pdeck.deck)
+        if 'Silk Road' not in deck:
+            continue
+        g_pts = game.score_silk_road(deck)
+        if g_pts >= 20:
+            ret.append(achievement(player, 
+                                   '%d VP from Silk Road' % g_pts, g_pts))
+
+    return ret    
+
+GroupFuncs([CheckMatchCarny, CheckMatchGardener, CheckMatchDukeOfEarl,
+            CheckMatchSilkTrader], 'vvp')
+
 # == Use of one card in a turn
 #("Puppet Master") Play more than 4 Possession in one turn.
 # Crucio: Use the Torturer three times in a single turn.
@@ -251,13 +281,85 @@ def CheckMatchDukeOfEarl(g):
 
 # == Every Turn
 # Protego: Reacted to all attacks against you (and at least 5).
-#("Bully") Play an attack every turn after the fourth.
 # Empty Throne Room
 # Empty Kings Court
 
+def CheckMatchBully(g):
+    """Played an attack every turn after turn 4"""
+    if g.any_resigned():
+        return []
+    players = set(g.all_player_names())
+
+    for turn in g.get_turns():
+        if turn.get_turn_no() <= 4:
+            continue
+        player = turn.player.player_name
+        if player not in players:
+            continue
+        attack = False
+        for play in turn.plays:
+            if card_info.is_attack(play):
+                attack = True
+                break
+        if not attack:
+            players.remove(player)
+            if len(players) == 0:
+                break
+    return [achievement(player, 'Played an attack every turn after turn 4') for player in players] 
+
 
 # == Number of Cards acquired
-# King of the Joust - acquire all five prizes
+
+def one_turn(g, player, cardList):
+    """Returns true if 'player' bought/gained the cards in the cardList only on one turn"""
+    found = False
+    for turn in g.turns:
+        if turn.player.player_name==player:
+            buysgains = turn.buys + turn.gains
+            for card in cardList:
+                if card in buysgains:
+                    if found:
+                        return False
+                    else:
+                        found = True
+                        break 
+    return found
+
+def prize_check(g):
+    if 'Tournament' not in g.supply:
+        return (False, False)
+
+    for pdeck in g.get_player_decks():
+        (player, deck) = (pdeck.player_name, pdeck.deck)
+        n_prizes = 0
+        for prize in card_info.TOURNAMENT_WINNINGS:
+            if prize in deck:
+                n_prizes += 1
+        if n_prizes == len(card_info.TOURNAMENT_WINNINGS):
+            return (player, one_turn(g, player, card_info.TOURNAMENT_WINNINGS))
+    return (False, False)
+
+def CheckMatchPrizeFighter(g):
+    """Acquire all five prizes"""
+    # a.k.a. King of the Joust
+    (player, in_one_turn) = prize_check(g)
+    ret = []
+    if player and not in_one_turn:
+        ret.append(achievement(player, 'Acquired all five prizes'))
+    return ret
+
+def CheckMatchChampionPrizeFighter(g):
+    """Acquire all five prizes in one turn"""
+    (player, in_one_turn) = prize_check(g)
+    ret = []
+    if player and in_one_turn:
+        ret.append(achievement(player, 'Acquired all five prizes in one turn'))
+    return ret
+
+
+GroupFuncs([CheckMatchPrizeFighter, CheckMatchChampionPrizeFighter], 'prizes')
+
+# Get all the curses and still win
 # Researcher: Acquire 7 Alchemists or Laboratories.
 # Evil Overlord: Acquire 7 or more Minions.
 # It's Good to be the King: Acquire 4 Throne Rooms or King's Courts.
@@ -271,13 +373,57 @@ def CheckMatchDukeOfEarl(g):
 # Used Possession+Masquerade to send yourself a Province or Colony
 # gifted a Province or Colony to an opponent (through Masquerade or Ambassador),
 # De-model - remodeled a card into a card that costs less
-# Banker - played a Bank worth $10
 # Look Out! - revealed three 6+-cost cards with Lookout
 # Goon Squad - acquired 42 VP tokens from Goons in a single turn
-# played 20 actions in a turn
-
+# Name it - 5 Correct wishes
 #("This card sucks?") Winning with an Opening Chancellor
+# Treasure Map multiple times
 
+# Banker - played a Bank worth $10
+def CheckMatchBanker(g):
+    """Played a Bank worth $10"""
+    ret = []
+    if 'Bank' not in g.supply:
+        return ret
+
+    for turn in g.get_turns():
+        treasure_count = 0
+        for card in turn.plays:
+            if card_info.is_treasure(card):
+                treasure_count += 1
+                if card == 'Bank':
+                    if treasure_count >= 10:
+                        ret.append(achievement(turn.player.player_name, 
+                                "Played a Bank worth $%d" % treasure_count))
+    return ret    
+
+def CheckActionsPerTurn(g, low, high=None):
+    ret = []
+    for turn in g.get_turns():
+        action_count = 0
+        for card in turn.plays:
+            if card_info.is_action(card):
+                action_count += 1
+
+        if action_count >= low and (high is None or action_count < high):
+            ret.append(achievement(turn.player.player_name, 
+                    "Played %d or more actions in one turn" % low, action_count))
+    return ret
+
+def CheckMatchActionStar(g):
+    """Played at least 25 actions in a turn"""
+    return CheckActionsPerTurn(g, 25, 30)
+
+def CheckMatchMegaActionStar(g):
+    """Played at least 30 actions in a turn"""
+    return CheckActionsPerTurn(g, 30, 40)
+
+def CheckMatchSuperActionStar(g):
+    """Played at least 40 actions in a turn"""
+    return CheckActionsPerTurn(g, 40)
+
+
+GroupFuncs([CheckMatchActionStar, CheckMatchMegaActionStar, CheckMatchSuperActionStar], 'actions')
 
 def CheckPointsPerTurn(g, low, high=None):
     ret = []
@@ -371,6 +517,9 @@ for name in dict(globals()):
 def GetGoalImageFilename(goal_name):
     return 'static/images/%s.png' % goal_name
 
+def GetGoalDescription(goal_name):
+    return goal_check_funcs[goal_name].__doc__
+
 def MaybeRenderGoals(db, norm_target_player):
     game_matches = list(db.goals.find({'goals.player': norm_target_player}))
     ret = ''
@@ -415,6 +564,8 @@ function toggle(item) {
                     goals_achieved.append(goal_name)
         
         def GroupPriorityAndName(goal):
+            if goal not in goal_check_funcs:
+                return None
             func = goal_check_funcs[goal]
             return func.group, func.priority, func.__name__
 
