@@ -73,6 +73,9 @@ def is_action(singular_card_name):
 def is_attack(singular_card_name):
     return _card_info_rows[singular_card_name]['Attack'] == '1'
 
+def expansion(singular_card_name):
+    return _card_info_rows[singular_card_name]['Expansion']
+
 def trashes(singular_card_name):
     trash_str = _card_info_rows[singular_card_name]['Trash']
     if trash_str == '?': 

@@ -329,6 +329,22 @@ class Game(object):
     def game_state_iterator(self):
         return GameState(self)
 
+    def get_expansion_weight(self):
+        weights = collections.defaultdict(float)
+        total = 0
+
+        for c in self.supply:
+            expansion = card_info.expansion(c)
+            if expansion == 'Common':
+                continue
+            weights[expansion] += 1.0
+            total += 1
+
+        for expansion in weights:
+            weights[expansion] /= float(total)
+
+        return weights
+
 def score_deck(deck_comp):
     """ Given a dict of card, frequency, return the score. """
     ret = 0

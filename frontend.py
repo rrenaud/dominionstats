@@ -21,6 +21,7 @@ from record_summary import RecordSummary
 from small_gain_stat import SmallGainStat
 import datetime
 from optimal_card_ratios import DBCardRatioTracker
+import operator
 
 import utils
 import card_info
@@ -40,6 +41,7 @@ urls = (
   '/supply_win_api', 'SupplyWinApi',
   '/supply_win', 'SupplyWinPage',
   '/optimal_card_ratios', 'OptimalCardRatios',
+  '/games_by_opponent', 'GamesByOpponentPage',
   '/(.*)', 'StaticPage'
 )
 
@@ -204,10 +206,6 @@ class PlayerPage(object):
         leaderboard_history = db.leaderboard_history.find_one({'_id': norm_target_player})
         leaderboard_history = leaderboard_history['history'] if leaderboard_history else None
 
-        keyed_by_opp = collections.defaultdict(list)
-        real_name_usage = collections.defaultdict(
-            lambda: collections.defaultdict(int))
-
         game_list = []
         aliases = set()
 
@@ -215,6 +213,9 @@ class PlayerPage(object):
         rec_by_game_size = collections.defaultdict(RecordSummary)
         rec_by_date = collections.defaultdict(RecordSummary)
         rec_by_turn_order =  collections.defaultdict(RecordSummary)
+
+        expansion_dist = collections.defaultdict(float)
+        expansion_win_points = collections.defaultdict(float)
 
         date_buckets = [1, 3, 5, 10]
         for g in games_coll:
@@ -233,31 +234,30 @@ class PlayerPage(object):
             game_list.append(game_val)
             target_player_cur_name = target_player_cur_name_cand[0]
             aliases.add(target_player_cur_name)
-            for p in game_val.get_player_decks():
-                if p.name() != target_player_cur_name:
-                    other_norm_name = norm_name(p.name())
-                    keyed_by_opp[other_norm_name].append(
-                        (p.name(), target_player_cur_name, game_val))
-                    real_name_usage[other_norm_name][p.name()] += 1
-                else:
-                    res = game_val.win_loss_tie(p.name())
-                    overall_record.record_result(res, p.WinPoints())
-                    game_len = len(game_val.get_player_decks())
-                    rec_by_game_size[game_len].record_result(res,
-                                                             p.WinPoints())
-                    _ord = p.TurnOrder()
-                    rec_by_turn_order[_ord].record_result(res, p.WinPoints())
-                    for delta in date_buckets:
-                        _padded = (game_val.date() +
-                                   datetime.timedelta(days = delta))
-                        delta_padded_date = _padded.date()
-                        today = datetime.datetime.now().date()
-                        if delta_padded_date >= today:
-                            rec_by_date[delta].record_result(res,
-                                                             p.WinPoints())
 
-        keyed_by_opp_list = keyed_by_opp.items()
-        keyed_by_opp_list.sort(key = lambda x: (-len(x[1]), x[0]))
+            pd = game_val.get_player_deck(norm_target_player)
+            wp = pd.WinPoints()
+
+            res = game_val.win_loss_tie(norm_target_player)
+            overall_record.record_result(res, wp)
+            game_len = len(game_val.get_player_decks())
+            rec_by_game_size[game_len].record_result(res, wp)
+
+            _ord = pd.TurnOrder()
+            rec_by_turn_order[_ord].record_result(res, wp)
+            for delta in date_buckets:
+                _padded = (game_val.date() +
+                           datetime.timedelta(days = delta))
+                delta_padded_date = _padded.date()
+                today = datetime.datetime.now().date()
+                if delta_padded_date >= today:
+                    rec_by_date[delta].record_result(res, wp)
+
+            for (ex, wt) in game_val.get_expansion_weight().items():
+                expansion_dist[ex] += wt
+                expansion_win_points[ex] += wt * wp
+
+
         #TODO: a good choice for a template like jinja2
         ret = standard_heading("CouncilRoom.com: Dominion Stats: %s" % target_player)
 
@@ -293,10 +293,30 @@ class PlayerPage(object):
                                    lambda pos: 'Table position %d' % pos)
 
         ret += '<div style="clear: both;">&nbsp;</div>'
+        ret += '<div class="cardborder yellow"><h3>Expansion Data</h3><table class="stats">'
+        ret += '<tr><th>Card Set<th>Avg. Cards<br/> Per Kingdom<th>Weighted<br/> Win Points<th>Favor'
+
+        for (ex, weight) in sorted(expansion_dist.iteritems(), 
+                      key=operator.itemgetter(1), reverse=True):
+
+            if ex == 'Fan':
+                continue
+
+            wp = expansion_win_points[ex] / weight
+            average = overall_record.average_win_points()
+
+            ret += '<tr><th>%s</th>'%ex
+            ret += '<td>%.2f'% (weight * 10. / len(game_list))
+            ret += '<td>%.2f' % wp
+            ret += '<td>%.2f%%'% ( (wp - average) * 100. / average )
+        ret += '</table></div>'
+
+        ret += '<div style="clear: both;">&nbsp;</div>'
 
         ret += goals.MaybeRenderGoals(db, norm_target_player)
 
-        ret += '<A HREF="/popular_buys?player=%s"><h2>Stats by card</h2></A><BR>\n' % target_player
+        ret += '<A HREF="/popular_buys?player=%s"><h2>Stats by card</h2></A>\n' % target_player
+        ret += '<A HREF="/games_by_opponent?player=%s"><h2>Record by opponent</h2></A>\n' % target_player
 
         if leaderboard_history:
             render = web.template.render('')
@@ -311,10 +331,59 @@ class PlayerPage(object):
 
         ret += ('<A HREF="/search_result?p1_name=%s">(See more)</A>' % 
                 target_player)
+        ret += '</body></html>'
 
-        ret += '<h2>Record by opponent</h2>'
+        return ret
+
+class GamesByOpponentPage(object):
+    def GET(self):
+        web.header("Content-Type", "text/html; charset=utf-8")  
+        query_dict = dict(urlparse.parse_qsl(web.ctx.env['QUERY_STRING']))
+        target_player = query_dict['player'].decode('utf-8')
+        ret = standard_heading("CouncilRoom.com: Dominion Stats: %s" % target_player)
+
+        ret += '<form action="/player" method="get">'
+        ret += '<span class="subhead">Record By Opponent for %s</span>' % target_player
+        ret += '<br/><br/>\n\n'
         ret += '<table border=1>'
         ret += '<tr><td>Opponent</td><td>Record</td></tr>'
+
+        db = utils.get_mongo_database()
+        games = db.games
+        norm_target_player = norm_name(target_player)
+        games_coll = games.find({'players': norm_target_player})
+
+        keyed_by_opp = collections.defaultdict(list)
+        game_list = []
+        real_name_usage = collections.defaultdict(
+            lambda: collections.defaultdict(int))
+
+        for g in games_coll:
+            game_val = game.Game(g)
+            if game_val.dubious_quality():
+                continue
+            all_player_names = game_val.all_player_names()
+            norm_names = map(norm_name, all_player_names)
+            if len(set(norm_names)) != len(all_player_names):
+                continue
+            target_player_cur_name_cand = [
+                n for n in all_player_names
+                if norm_name(n) == norm_target_player]
+            if len(target_player_cur_name_cand) != 1:
+                continue
+            game_list.append(game_val)
+            target_player_cur_name = target_player_cur_name_cand[0]
+
+            for p in game_val.get_player_decks():
+                if p.name() != target_player_cur_name:
+                    other_norm_name = norm_name(p.name())
+                    keyed_by_opp[other_norm_name].append(
+                        (p.name(), target_player_cur_name, game_val))
+                    real_name_usage[other_norm_name][p.name()] += 1
+
+        keyed_by_opp_list = keyed_by_opp.items()
+        keyed_by_opp_list.sort(key = lambda x: (-len(x[1]), x[0]))
+
         for opp_norm_name, game_list in keyed_by_opp_list:
             record = [0, 0, 0]
             for opp_name, tgt_player_curname, g in game_list:

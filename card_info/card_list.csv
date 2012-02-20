@@ -1,174 +1,174 @@
-"Singular","Plural","Cost","Actions","Cards","Action","Treasure","Victory","Attack","Reaction","Duration","VP","Trash","Coins","Buys","Index"
-"Adventurer","Adventurers",6,0,2,1,0,0,0,0,0,0,0,0,0,0
-"Alchemist","Alchemists","P3",1,2,1,0,0,0,0,0,0,0,0,0,1
-"Ambassador","Ambassadors",3,0,0,1,0,0,1,0,0,0,0,0,0,2
-"Apothecary","Apothecaries","P2",1,1,1,0,0,0,0,0,0,0,0,0,3
-"Apprentice","Apprentices",5,1,0,1,0,0,0,0,0,0,1,0,0,4
-"Archivist","Archivists",5,1,"?",1,0,0,0,0,0,0,0,"?",0,5
-"Bag of Gold","Bags of Gold","*0",1,0,1,0,0,0,0,0,0,0,0,0,6
-"Bank","Banks",7,0,0,0,1,0,0,0,0,0,0,"?",0,7
-"Baron","Barons",4,0,0,1,0,0,0,0,0,0,0,4,1,8
-"Bazaar","Bazaars",5,2,1,1,0,0,0,0,0,0,0,1,0,9
-"Bishop","Bishops",4,0,0,1,0,0,0,0,0,0,1,1,0,10
-"Black Market","Black Markets",3,0,0,1,0,0,0,0,0,0,0,2,1,11
-"Border Village","Border Villages",6,2,1,1,0,0,0,0,0,0,0,0,0,12
-"Bridge","Bridges",4,0,0,1,0,0,0,0,0,0,0,1,1,13
-"Bureaucrat","Bureaucrats",4,0,0,1,0,0,1,0,0,0,0,0,0,14
-"Cache","Caches",5,0,0,0,1,0,0,0,0,0,0,3,0,15
-"Caravan","Caravans",4,1,1,1,0,0,0,0,1,0,0,0,0,16
-"Cartographer","Cartographers",5,1,1,1,0,0,0,0,0,0,0,0,0,17
-"Cellar","Cellars",2,1,0,1,0,0,0,0,0,0,0,0,0,18
-"Chancellor","Chancellors",3,0,0,1,0,0,0,0,0,0,0,2,0,19
-"Chapel","Chapels",2,0,0,1,0,0,0,0,0,0,4,0,0,20
-"City","Cities",5,2,1,1,0,0,0,0,0,0,0,1,1,21
-"Colony","Colonies",11,0,0,0,0,1,0,0,0,10,0,0,0,22
-"Conspirator","Conspirators",4,0,0,1,0,0,0,0,0,0,0,2,0,23
-"Contraband","Contrabands",5,0,0,0,1,0,0,0,0,0,0,3,1,24
-"Copper","Coppers",0,0,0,0,1,0,0,0,0,0,0,1,0,25
-"Coppersmith","Coppersmiths",4,0,0,1,0,0,0,0,0,0,0,0,0,26
-"Council Room","Council Rooms",5,0,4,1,0,0,0,0,0,0,0,0,1,27
-"Counting House","Counting Houses",5,0,0,1,0,0,0,0,0,0,0,0,0,28
-"Courtyard","Courtyards",2,0,2,1,0,0,0,0,0,0,0,0,0,29
-"Crossroads","Crossroads",2,"?","?",1,0,0,0,0,0,0,0,0,0,30
-"Curse","Curses",0,0,0,0,0,0,0,0,0,-1,0,0,0,31
-"Cutpurse","Cutpurses",4,0,0,1,0,0,1,0,0,0,0,2,0,32
-"Develop","Develops",3,0,0,1,0,0,0,0,0,0,0,0,0,33
-"Diadem","Diadems","*0",0,0,0,1,0,0,0,0,0,0,"?",0,34
-"Duchy","Duchies",5,0,0,0,0,1,0,0,0,3,0,0,0,35
-"Duke","Dukes",5,0,0,0,0,1,0,0,0,"?",0,0,0,36
-"Duchess","Duchesses",2,0,0,1,0,0,0,0,0,0,0,2,0,37
-"Embargo","Embargoes",2,0,0,1,0,0,0,0,0,0,1,2,0,38
-"Embassy","Embassies",5,0,5,1,0,0,0,0,0,0,0,0,0,39
-"Envoy","Envoys",4,0,4,1,0,0,0,0,0,0,0,0,0,40
-"Estate","Estates",2,0,0,0,0,1,0,0,0,1,0,0,0,41
-"Expand","Expands",7,0,0,1,0,0,0,0,0,0,1,0,0,42
-"Explorer","Explorers",5,0,0,1,0,0,0,0,0,0,0,0,0,43
-"Fairgrounds","Fairgrounds",6,0,0,0,0,0,0,0,0,"?",0,0,0,44
-"Familiar","Familiars","P3",1,1,1,0,0,1,0,0,0,0,0,0,45
-"Farming Village","Farming Villages",4,2,1,1,0,0,0,0,0,0,0,0,0,46
-"Farmland","Farmlands",6,0,0,0,0,1,0,0,0,2,0,0,0,47
-"Feast","Feasts",4,0,0,1,0,0,0,0,0,0,1,0,0,48
-"Festival","Festivals",5,2,0,1,0,0,0,0,0,0,0,2,1,49
-"Fishing Village","Fishing Villages",3,2,0,1,0,0,0,0,1,0,0,1,0,50
-"Followers","Followers","*0",0,2,1,0,0,0,0,0,0,0,0,0,51
-"Fool's Gold","Fool's Golds",2,0,0,0,1,0,0,1,0,0,0,"?",0,52
-"Forge","Forges",7,0,0,1,0,0,0,0,0,0,99,0,0,53
-"Fortune Teller","Fortune Tellers",3,0,0,1,0,0,0,0,0,0,0,2,0,54
-"Gardens","Gardens",4,0,0,0,0,1,0,0,0,"?",0,0,0,55
-"Ghost Ship","Ghost Ships",5,0,2,1,0,0,1,0,0,0,0,0,0,56
-"Gold","Golds",6,0,0,0,1,0,0,0,0,0,0,3,0,57
-"Golem","Golems","P4",0,0,1,0,0,0,0,0,0,0,0,0,58
-"Goons","Goons",6,0,0,1,0,0,1,0,0,0,0,2,1,59
-"Governor","Governors",5,1,"?",1,0,0,0,0,0,0,"?",0,0,60
-"Grand Market","Grand Markets",6,1,1,1,0,0,0,0,0,0,0,2,1,61
-"Great Hall","Great Halls",3,1,1,1,0,1,0,0,0,1,0,0,0,62
-"Haggler","Hagglers",5,0,0,1,0,0,0,0,0,0,0,2,0,63
-"Hamlet","Hamlets",2,2,1,1,0,0,0,0,0,0,0,0,1,64
-"Harem","Harems",6,0,0,0,1,1,0,0,0,2,0,2,0,65
-"Harvest","Harvests",5,0,0,1,0,0,0,0,0,0,0,"?",0,66
-"Haven","Havens",2,1,1,1,0,0,0,0,1,0,0,0,0,67
-"Herbalist","Herbalists",2,0,0,1,0,0,0,0,0,0,0,1,1,68
-"Highway","Highways",5,1,1,1,0,0,0,0,0,0,0,0,0,69
-"Hoard","Hoards",6,0,0,0,1,0,0,0,0,0,0,2,0,70
-"Horn of Plenty","Horns of Plenty",5,0,0,0,1,0,0,0,0,0,0,0,0,71
-"Horse Traders","Horse Traders",4,0,-2,1,0,0,0,1,0,0,0,3,1,72
-"Hunting Party","Hunting Parties",5,1,2,1,0,0,0,0,0,0,0,0,0,73
-"Ill-Gotten Gains","Ill-Gotten Gains",5,0,0,0,1,0,0,0,0,0,0,0,0,74
-"Inn","Inns",5,2,2,1,0,0,0,0,0,0,0,0,0,75
-"Ironworks","Ironworks",4,0,0,1,0,0,0,0,0,0,0,1,0,76
-"Island","Islands",4,0,0,1,0,1,0,0,0,2,0,0,0,77
-"Jack of All Trades","Jacks of All Trades",4,0,0,1,0,0,0,0,0,0,0,0,0,78
-"Jester","Jesters",5,0,0,1,0,0,1,0,0,0,0,2,0,79
-"King's Court","King's Courts",7,0,0,1,0,0,0,0,0,0,0,0,0,80
-"Laboratory","Laboratories",5,1,2,1,0,0,0,0,0,0,0,0,0,81
-"Library","Libraries",5,0,3,1,0,0,0,0,0,0,0,0,0,82
-"Lighthouse","Lighthouses",2,1,0,1,0,0,0,1,1,0,0,1,0,83
-"Loan","Loans",3,0,0,0,1,0,0,0,0,0,1,1,0,84
-"Lookout","Lookouts",3,1,0,1,0,0,0,0,0,0,1,0,0,85
-"Mandarin","Mandarins",5,0,0,1,3,0,0,0,0,0,0,3,0,86
-"Market","Markets",5,1,1,1,0,0,0,0,0,0,0,1,1,87
-"Margrave","Margraves",5,0,3,1,0,0,1,0,0,0,0,0,1,88
-"Masquerade","Masquerades",3,0,2,1,0,0,0,0,0,0,1,0,0,89
-"Menagerie","Menageries",3,1,3,1,0,0,0,0,0,0,0,0,,90
-"Merchant Ship","Merchant Ships",5,0,0,1,0,0,0,0,1,0,0,2,0,91
-"Militia","Militias",4,0,0,1,0,0,1,0,0,0,0,2,0,92
-"Mine","Mines",5,0,0,1,0,0,0,0,0,0,1,0,0,93
-"Mining Village","Mining Villages",4,2,1,1,0,0,0,0,0,0,1,2,0,94
-"Minion","Minions",5,1,0,1,0,0,1,0,0,0,0,2,0,95
-"Mint","Mints",5,0,0,1,0,0,0,0,0,0,"?",0,0,96
-"Moat","Moats",2,0,2,1,0,0,0,1,0,0,0,0,0,97
-"Moneylender","Moneylenders",4,0,0,1,0,0,0,0,0,0,1,3,0,98
-"Monument","Monuments",4,0,0,1,0,0,0,0,0,0,0,2,0,99
-"Mountebank","Mountebanks",5,0,0,1,0,0,1,0,0,0,0,2,0,100
-"Native Village","Native Villages",2,2,0,1,0,0,0,0,0,0,0,0,0,101
-"Navigator","Navigators",4,0,0,1,0,0,0,0,0,0,0,2,0,102
-"Nobles","Nobles",6,2,3,1,0,1,0,0,0,2,0,0,0,103
-"Noble Brigand","Noble Brigands",4,0,0,1,0,0,1,0,0,0,0,1,0,104
-"Nomad Camp","Nomad Camps",4,0,0,1,0,0,0,0,0,0,0,2,1,105
-"Oasis","Oases",3,1,1,1,0,0,0,0,0,0,0,1,0,106
-"Oracle","Oracles",3,0,2,1,0,0,1,0,0,0,0,0,0,107
-"Outpost","Outposts",5,0,0,1,0,0,0,0,1,0,0,0,0,108
-"Pawn","Pawns",2,1,1,1,0,0,0,0,0,0,0,1,1,109
-"Pearl Diver","Pearl Divers",2,1,1,1,0,0,0,0,0,0,0,0,0,110
-"Peddler","Peddlers",8,1,1,1,0,0,0,0,0,0,0,1,0,111
-"Philosopher's Stone","Philosopher's Stones","P3",0,0,0,1,0,0,0,0,0,0,"?",0,112
-"Pirate Ship","Pirate Ships",4,0,0,1,0,0,1,0,0,0,0,"?",0,113
-"Platinum","Platinums",9,0,0,0,1,0,0,0,0,0,0,5,0,114
-"Possession","Possessions","P6",0,0,1,0,0,0,0,0,0,0,0,0,115
-"Potion","Potions",4,0,0,0,1,0,0,0,0,0,0,"P",0,116
-"Princess","Princesses","*0",0,0,1,0,0,0,0,0,0,0,0,1,117
-"Province","Provinces",8,0,0,0,0,1,0,0,0,6,0,0,0,118
-"Quarry","Quarries",4,0,0,0,1,0,0,0,0,0,0,1,0,119
-"Rabble","Rabbles",5,0,3,1,0,0,1,0,0,0,0,0,0,120
-"Remake","Remakes",4,0,0,1,0,0,0,0,0,0,0,0,0,121
-"Remodel","Remodels",4,0,0,1,0,0,0,0,0,0,1,0,0,122
-"Royal Seal","Royal Seals",5,0,0,0,1,0,0,0,0,0,0,2,0,123
-"Saboteur","Saboteurs",5,0,0,1,0,0,1,0,0,0,0,0,0,124
-"Salvager","Salvagers",4,0,0,1,0,0,0,0,0,0,1,"?",1,125
-"Scheme","Schemes",3,1,1,1,0,0,0,0,0,0,0,0,0,126
-"Scout","Scouts",4,1,0,1,0,0,0,0,0,0,0,0,0,127
-"Scrying Pool","Scrying Pools","P2",1,1,1,0,0,1,0,0,0,0,0,0,128
-"Sea Hag","Sea Hags",4,0,0,1,0,0,1,0,0,0,0,0,0,129
-"Secret Chamber","Secret Chambers",2,0,0,1,0,0,0,1,0,0,0,"?",0,130
-"Shanty Town","Shanty Towns",3,2,2,1,0,0,0,0,0,0,0,0,0,131
-"Silk Road","Silk Roads",4,0,0,0,0,1,0,0,0,"?",0,0,0,132
-"Silver","Silvers",3,0,0,0,1,0,0,0,0,0,0,2,0,133
-"Smithy","Smithies",4,0,3,1,0,0,0,0,0,0,0,0,0,134
-"Smugglers","Smugglers",3,0,0,1,0,0,0,0,0,0,0,0,0,135
-"Spice Merchant","Spice Merchants",4,"?","?",1,0,0,0,0,0,0,0,"?","?",136
-"Spy","Spies",4,1,1,1,0,0,1,0,0,0,0,0,0,137
-"Stables","Stables",5,0,0,1,0,0,0,0,0,0,0,0,0,138
-"Stash","Stashes",5,0,0,0,1,0,0,0,0,0,0,2,0,139
-"Steward","Stewards",3,0,2,1,0,0,0,0,0,0,2,2,0,140
-"Swindler","Swindlers",3,0,0,1,0,0,1,0,0,0,0,2,0,141
-"Tactician","Tacticians",5,0,0,1,0,0,0,0,1,0,0,0,0,142
-"Talisman","Talismans",4,0,0,0,1,0,0,0,0,0,0,1,0,143
-"Thief","Thieves",4,0,0,1,0,0,1,0,0,0,0,0,0,144
-"Throne Room","Throne Rooms",4,0,0,1,0,0,0,0,0,0,0,0,0,145
-"Torturer","Torturers",5,0,3,1,0,0,1,0,0,0,0,0,0,146
-"Tournament","Tournaments",4,1,1,1,0,0,0,0,0,0,0,1,0,147
-"Trade Route","Trade Routes",3,0,0,1,0,0,0,0,0,0,1,"?",1,148
-"Trader","Traders",4,0,0,1,0,0,0,1,0,0,1,0,0,149
-"Trading Post","Trading Posts",5,0,0,1,0,0,0,0,0,0,2,0,0,150
-"Transmute","Transmutes","P",0,0,1,0,0,0,0,0,0,1,0,0,151
-"Treasure Map","Treasure Maps",4,0,0,1,0,0,0,0,0,0,2,0,0,152
-"Treasury","Treasuries",5,1,1,1,0,0,0,0,0,0,0,1,0,153
-"Tribute","Tributes",5,"?","?",1,0,0,0,0,0,0,0,"?",0,154
-"Trusty Steed","Trusty Steeds","*0","?","?",1,0,0,0,0,0,0,0,"?",0,155
-"Tunnel","Tunnels",3,0,0,0,0,1,0,1,0,2,0,0,0,156
-"University","Universities","P2",2,0,1,0,0,0,0,0,0,0,0,0,157
-"Upgrade","Upgrades",5,1,1,1,0,0,0,0,0,0,1,0,0,158
-"Vault","Vaults",5,0,2,1,0,0,0,0,0,0,0,"?",0,159
-"Venture","Ventures",5,0,0,0,1,0,0,0,0,0,0,1,0,160
-"Village","Villages",3,2,1,1,0,0,0,0,0,0,0,0,0,161
-"Vineyard","Vineyards","P",0,0,0,0,1,0,0,0,"?",0,0,0,162
-"Walled Village","Walled Villages",4,2,1,1,0,0,0,0,0,0,0,0,0,163
-"Warehouse","Warehouses",3,1,0,1,0,0,0,0,0,0,0,0,0,164
-"Watchtower","Watchtowers",3,0,2,1,0,0,0,1,0,0,0,0,0,165
-"Wharf","Wharves",5,0,2,1,0,0,0,0,1,0,0,0,1,166
-"Wishing Well","Wishing Wells",3,1,1,1,0,0,0,0,0,0,0,0,0,167
-"Witch","Witches",5,0,2,1,0,0,1,0,0,0,0,0,0,168
-"Woodcutter","Woodcutters",3,0,0,1,0,0,0,0,0,0,0,2,1,169
-"Worker's Village","Worker's Villages",4,2,1,1,0,0,0,0,0,0,0,0,1,170
-"Workshop","Workshops",3,0,0,1,0,0,0,0,0,0,0,0,0,171
-"Young Witch","Young Witches",4,0,2,1,0,0,0,0,0,0,0,0,0,172
+"Singular","Plural","Cost","Actions","Cards","Action","Treasure","Victory","Attack","Reaction","Duration","VP","Trash","Coins","Buys","Index","Expansion"
+"Adventurer","Adventurers",6,0,2,1,0,0,0,0,0,0,0,0,0,0,"Dominion"
+"Alchemist","Alchemists","P3",1,2,1,0,0,0,0,0,0,0,0,0,1,"Alchemy"
+"Ambassador","Ambassadors",3,0,0,1,0,0,1,0,0,0,0,0,0,2,"Seaside"
+"Apothecary","Apothecaries","P2",1,1,1,0,0,0,0,0,0,0,0,0,3,"Alchemy"
+"Apprentice","Apprentices",5,1,0,1,0,0,0,0,0,0,1,0,0,4,"Alchemy"
+"Archivist","Archivists",5,1,"?",1,0,0,0,0,0,0,0,"?",0,5,"Fan"
+"Bag of Gold","Bags of Gold","*0",1,0,1,0,0,0,0,0,0,0,0,0,6,"Cornucopia"
+"Bank","Banks",7,0,0,0,1,0,0,0,0,0,0,"?",0,7,"Prosperity"
+"Baron","Barons",4,0,0,1,0,0,0,0,0,0,0,4,1,8,"Intrigue"
+"Bazaar","Bazaars",5,2,1,1,0,0,0,0,0,0,0,1,0,9,"Seaside"
+"Bishop","Bishops",4,0,0,1,0,0,0,0,0,0,1,1,0,10,"Prosperity"
+"Black Market","Black Markets",3,0,0,1,0,0,0,0,0,0,0,2,1,11,"Promotional"
+"Border Village","Border Villages",6,2,1,1,0,0,0,0,0,0,0,0,0,12,"Hinterlands"
+"Bridge","Bridges",4,0,0,1,0,0,0,0,0,0,0,1,1,13,"Intrigue"
+"Bureaucrat","Bureaucrats",4,0,0,1,0,0,1,0,0,0,0,0,0,14,"Dominion"
+"Cache","Caches",5,0,0,0,1,0,0,0,0,0,0,3,0,15,"Hinterlands"
+"Caravan","Caravans",4,1,1,1,0,0,0,0,1,0,0,0,0,16,"Seaside"
+"Cartographer","Cartographers",5,1,1,1,0,0,0,0,0,0,0,0,0,17,"Hinterlands"
+"Cellar","Cellars",2,1,0,1,0,0,0,0,0,0,0,0,0,18,"Dominion"
+"Chancellor","Chancellors",3,0,0,1,0,0,0,0,0,0,0,2,0,19,"Dominion"
+"Chapel","Chapels",2,0,0,1,0,0,0,0,0,0,4,0,0,20,"Dominion"
+"City","Cities",5,2,1,1,0,0,0,0,0,0,0,1,1,21,"Prosperity"
+"Colony","Colonies",11,0,0,0,0,1,0,0,0,10,0,0,0,22,"Prosperity"
+"Conspirator","Conspirators",4,0,0,1,0,0,0,0,0,0,0,2,0,23,"Intrigue"
+"Contraband","Contrabands",5,0,0,0,1,0,0,0,0,0,0,3,1,24,"Prosperity"
+"Copper","Coppers",0,0,0,0,1,0,0,0,0,0,0,1,0,25,"Common"
+"Coppersmith","Coppersmiths",4,0,0,1,0,0,0,0,0,0,0,0,0,26,"Intrigue"
+"Council Room","Council Rooms",5,0,4,1,0,0,0,0,0,0,0,0,1,27,"Dominion"
+"Counting House","Counting Houses",5,0,0,1,0,0,0,0,0,0,0,0,0,28,"Prosperity"
+"Courtyard","Courtyards",2,0,2,1,0,0,0,0,0,0,0,0,0,29,"Intrigue"
+"Crossroads","Crossroads",2,"?","?",1,0,0,0,0,0,0,0,0,0,30,"Hinterlands"
+"Curse","Curses",0,0,0,0,0,0,0,0,0,-1,0,0,0,31,"Common"
+"Cutpurse","Cutpurses",4,0,0,1,0,0,1,0,0,0,0,2,0,32,"Seaside"
+"Develop","Develops",3,0,0,1,0,0,0,0,0,0,0,0,0,33,"Hinterlands"
+"Diadem","Diadems","*0",0,0,0,1,0,0,0,0,0,0,"?",0,34,"Cornucopia"
+"Duchy","Duchies",5,0,0,0,0,1,0,0,0,3,0,0,0,35,"Common"
+"Duke","Dukes",5,0,0,0,0,1,0,0,0,"?",0,0,0,36,"Intrigue"
+"Duchess","Duchesses",2,0,0,1,0,0,0,0,0,0,0,2,0,37,"Hinterlands"
+"Embargo","Embargoes",2,0,0,1,0,0,0,0,0,0,1,2,0,38,"Seaside"
+"Embassy","Embassies",5,0,5,1,0,0,0,0,0,0,0,0,0,39,"Hinterlands"
+"Envoy","Envoys",4,0,4,1,0,0,0,0,0,0,0,0,0,40,"Promotional"
+"Estate","Estates",2,0,0,0,0,1,0,0,0,1,0,0,0,41,"Common"
+"Expand","Expands",7,0,0,1,0,0,0,0,0,0,1,0,0,42,"Prosperity"
+"Explorer","Explorers",5,0,0,1,0,0,0,0,0,0,0,0,0,43,"Seaside"
+"Fairgrounds","Fairgrounds",6,0,0,0,0,0,0,0,0,"?",0,0,0,44,"Cornucopia"
+"Familiar","Familiars","P3",1,1,1,0,0,1,0,0,0,0,0,0,45,"Alchemy"
+"Farming Village","Farming Villages",4,2,1,1,0,0,0,0,0,0,0,0,0,46,"Cornucopia"
+"Farmland","Farmlands",6,0,0,0,0,1,0,0,0,2,0,0,0,47,"Hinterlands"
+"Feast","Feasts",4,0,0,1,0,0,0,0,0,0,1,0,0,48,"Dominion"
+"Festival","Festivals",5,2,0,1,0,0,0,0,0,0,0,2,1,49,"Dominion"
+"Fishing Village","Fishing Villages",3,2,0,1,0,0,0,0,1,0,0,1,0,50,"Seaside"
+"Followers","Followers","*0",0,2,1,0,0,0,0,0,0,0,0,0,51,"Cornucopia"
+"Fool's Gold","Fool's Golds",2,0,0,0,1,0,0,1,0,0,0,"?",0,52,"Hinterlands"
+"Forge","Forges",7,0,0,1,0,0,0,0,0,0,99,0,0,53,"Prosperity"
+"Fortune Teller","Fortune Tellers",3,0,0,1,0,0,0,0,0,0,0,2,0,54,"Cornucopia"
+"Gardens","Gardens",4,0,0,0,0,1,0,0,0,"?",0,0,0,55,"Dominion"
+"Ghost Ship","Ghost Ships",5,0,2,1,0,0,1,0,0,0,0,0,0,56,"Seaside"
+"Gold","Golds",6,0,0,0,1,0,0,0,0,0,0,3,0,57,"Common"
+"Golem","Golems","P4",0,0,1,0,0,0,0,0,0,0,0,0,58,"Alchemy"
+"Goons","Goons",6,0,0,1,0,0,1,0,0,0,0,2,1,59,"Prosperity"
+"Governor","Governors",5,1,"?",1,0,0,0,0,0,0,"?",0,0,60,"Promotional"
+"Grand Market","Grand Markets",6,1,1,1,0,0,0,0,0,0,0,2,1,61,"Prosperity"
+"Great Hall","Great Halls",3,1,1,1,0,1,0,0,0,1,0,0,0,62,"Intrigue"
+"Haggler","Hagglers",5,0,0,1,0,0,0,0,0,0,0,2,0,63,"Hinterlands"
+"Hamlet","Hamlets",2,2,1,1,0,0,0,0,0,0,0,0,1,64,"Cornucopia"
+"Harem","Harems",6,0,0,0,1,1,0,0,0,2,0,2,0,65,"Intrigue"
+"Harvest","Harvests",5,0,0,1,0,0,0,0,0,0,0,"?",0,66,"Cornucopia"
+"Haven","Havens",2,1,1,1,0,0,0,0,1,0,0,0,0,67,"Seaside"
+"Herbalist","Herbalists",2,0,0,1,0,0,0,0,0,0,0,1,1,68,"Alchemy"
+"Highway","Highways",5,1,1,1,0,0,0,0,0,0,0,0,0,69,"Hinterlands"
+"Hoard","Hoards",6,0,0,0,1,0,0,0,0,0,0,2,0,70,"Prosperity"
+"Horn of Plenty","Horns of Plenty",5,0,0,0,1,0,0,0,0,0,0,0,0,71,"Cornucopia"
+"Horse Traders","Horse Traders",4,0,-2,1,0,0,0,1,0,0,0,3,1,72,"Cornucopia"
+"Hunting Party","Hunting Parties",5,1,2,1,0,0,0,0,0,0,0,0,0,73,"Cornucopia"
+"Ill-Gotten Gains","Ill-Gotten Gains",5,0,0,0,1,0,0,0,0,0,0,0,0,74,"Hinterlands"
+"Inn","Inns",5,2,2,1,0,0,0,0,0,0,0,0,0,75,"Hinterlands"
+"Ironworks","Ironworks",4,0,0,1,0,0,0,0,0,0,0,1,0,76,"Intrigue"
+"Island","Islands",4,0,0,1,0,1,0,0,0,2,0,0,0,77,"Seaside"
+"Jack of All Trades","Jacks of All Trades",4,0,0,1,0,0,0,0,0,0,0,0,0,78,"Hinterlands"
+"Jester","Jesters",5,0,0,1,0,0,1,0,0,0,0,2,0,79,"Cornucopia"
+"King's Court","King's Courts",7,0,0,1,0,0,0,0,0,0,0,0,0,80,"Prosperity"
+"Laboratory","Laboratories",5,1,2,1,0,0,0,0,0,0,0,0,0,81,"Dominion"
+"Library","Libraries",5,0,3,1,0,0,0,0,0,0,0,0,0,82,"Dominion"
+"Lighthouse","Lighthouses",2,1,0,1,0,0,0,1,1,0,0,1,0,83,"Seaside"
+"Loan","Loans",3,0,0,0,1,0,0,0,0,0,1,1,0,84,"Prosperity"
+"Lookout","Lookouts",3,1,0,1,0,0,0,0,0,0,1,0,0,85,"Seaside"
+"Mandarin","Mandarins",5,0,0,1,3,0,0,0,0,0,0,3,0,86,"Hinterlands"
+"Market","Markets",5,1,1,1,0,0,0,0,0,0,0,1,1,87,"Dominion"
+"Margrave","Margraves",5,0,3,1,0,0,1,0,0,0,0,0,1,88,"Hinterlands"
+"Masquerade","Masquerades",3,0,2,1,0,0,0,0,0,0,1,0,0,89,"Intrigue"
+"Menagerie","Menageries",3,1,3,1,0,0,0,0,0,0,0,0,,90,"Cornucopia"
+"Merchant Ship","Merchant Ships",5,0,0,1,0,0,0,0,1,0,0,2,0,91,"Seaside"
+"Militia","Militias",4,0,0,1,0,0,1,0,0,0,0,2,0,92,"Dominion"
+"Mine","Mines",5,0,0,1,0,0,0,0,0,0,1,0,0,93,"Dominion"
+"Mining Village","Mining Villages",4,2,1,1,0,0,0,0,0,0,1,2,0,94,"Intrigue"
+"Minion","Minions",5,1,0,1,0,0,1,0,0,0,0,2,0,95,"Intrigue"
+"Mint","Mints",5,0,0,1,0,0,0,0,0,0,"?",0,0,96,"Prosperity"
+"Moat","Moats",2,0,2,1,0,0,0,1,0,0,0,0,0,97,"Dominion"
+"Moneylender","Moneylenders",4,0,0,1,0,0,0,0,0,0,1,3,0,98,"Dominion"
+"Monument","Monuments",4,0,0,1,0,0,0,0,0,0,0,2,0,99,"Prosperity"
+"Mountebank","Mountebanks",5,0,0,1,0,0,1,0,0,0,0,2,0,100,"Prosperity"
+"Native Village","Native Villages",2,2,0,1,0,0,0,0,0,0,0,0,0,101,"Seaside"
+"Navigator","Navigators",4,0,0,1,0,0,0,0,0,0,0,2,0,102,"Seaside"
+"Nobles","Nobles",6,2,3,1,0,1,0,0,0,2,0,0,0,103,"Intrigue"
+"Noble Brigand","Noble Brigands",4,0,0,1,0,0,1,0,0,0,0,1,0,104,"Hinterlands"
+"Nomad Camp","Nomad Camps",4,0,0,1,0,0,0,0,0,0,0,2,1,105,"Hinterlands"
+"Oasis","Oases",3,1,1,1,0,0,0,0,0,0,0,1,0,106,"Hinterlands"
+"Oracle","Oracles",3,0,2,1,0,0,1,0,0,0,0,0,0,107,"Hinterlands"
+"Outpost","Outposts",5,0,0,1,0,0,0,0,1,0,0,0,0,108,"Seaside"
+"Pawn","Pawns",2,1,1,1,0,0,0,0,0,0,0,1,1,109,"Intrigue"
+"Pearl Diver","Pearl Divers",2,1,1,1,0,0,0,0,0,0,0,0,0,110,"Seaside"
+"Peddler","Peddlers",8,1,1,1,0,0,0,0,0,0,0,1,0,111,"Prosperity"
+"Philosopher's Stone","Philosopher's Stones","P3",0,0,0,1,0,0,0,0,0,0,"?",0,112,"Alchemy"
+"Pirate Ship","Pirate Ships",4,0,0,1,0,0,1,0,0,0,0,"?",0,113,"Seaside"
+"Platinum","Platinums",9,0,0,0,1,0,0,0,0,0,0,5,0,114,"Prosperity"
+"Possession","Possessions","P6",0,0,1,0,0,0,0,0,0,0,0,0,115,"Alchemy"
+"Potion","Potions",4,0,0,0,1,0,0,0,0,0,0,"P",0,116,"Alchemy"
+"Princess","Princesses","*0",0,0,1,0,0,0,0,0,0,0,0,1,117,"Cornucopia"
+"Province","Provinces",8,0,0,0,0,1,0,0,0,6,0,0,0,118,"Common"
+"Quarry","Quarries",4,0,0,0,1,0,0,0,0,0,0,1,0,119,"Prosperity"
+"Rabble","Rabbles",5,0,3,1,0,0,1,0,0,0,0,0,0,120,"Prosperity"
+"Remake","Remakes",4,0,0,1,0,0,0,0,0,0,0,0,0,121,"Cornucopia"
+"Remodel","Remodels",4,0,0,1,0,0,0,0,0,0,1,0,0,122,"Dominion"
+"Royal Seal","Royal Seals",5,0,0,0,1,0,0,0,0,0,0,2,0,123,"Prosperity"
+"Saboteur","Saboteurs",5,0,0,1,0,0,1,0,0,0,0,0,0,124,"Intrigue"
+"Salvager","Salvagers",4,0,0,1,0,0,0,0,0,0,1,"?",1,125,"Seaside"
+"Scheme","Schemes",3,1,1,1,0,0,0,0,0,0,0,0,0,126,"Hinterlands"
+"Scout","Scouts",4,1,0,1,0,0,0,0,0,0,0,0,0,127,"Intrigue"
+"Scrying Pool","Scrying Pools","P2",1,1,1,0,0,1,0,0,0,0,0,0,128,"Alchemy"
+"Sea Hag","Sea Hags",4,0,0,1,0,0,1,0,0,0,0,0,0,129,"Seaside"
+"Secret Chamber","Secret Chambers",2,0,0,1,0,0,0,1,0,0,0,"?",0,130,"Intrigue"
+"Shanty Town","Shanty Towns",3,2,2,1,0,0,0,0,0,0,0,0,0,131,"Intrigue"
+"Silk Road","Silk Roads",4,0,0,0,0,1,0,0,0,"?",0,0,0,132,"Hinterlands"
+"Silver","Silvers",3,0,0,0,1,0,0,0,0,0,0,2,0,133,"Common"
+"Smithy","Smithies",4,0,3,1,0,0,0,0,0,0,0,0,0,134,"Dominion"
+"Smugglers","Smugglers",3,0,0,1,0,0,0,0,0,0,0,0,0,135,"Seaside"
+"Spice Merchant","Spice Merchants",4,"?","?",1,0,0,0,0,0,0,0,"?","?",136,"Hinterlands"
+"Spy","Spies",4,1,1,1,0,0,1,0,0,0,0,0,0,137,"Dominion"
+"Stables","Stables",5,0,0,1,0,0,0,0,0,0,0,0,0,138,"Hinterlands"
+"Stash","Stashes",5,0,0,0,1,0,0,0,0,0,0,2,0,139,"Promotional"
+"Steward","Stewards",3,0,2,1,0,0,0,0,0,0,2,2,0,140,"Intrigue"
+"Swindler","Swindlers",3,0,0,1,0,0,1,0,0,0,0,2,0,141,"Intrigue"
+"Tactician","Tacticians",5,0,0,1,0,0,0,0,1,0,0,0,0,142,"Seaside"
+"Talisman","Talismans",4,0,0,0,1,0,0,0,0,0,0,1,0,143,"Prosperity"
+"Thief","Thieves",4,0,0,1,0,0,1,0,0,0,0,0,0,144,"Dominion"
+"Throne Room","Throne Rooms",4,0,0,1,0,0,0,0,0,0,0,0,0,145,"Dominion"
+"Torturer","Torturers",5,0,3,1,0,0,1,0,0,0,0,0,0,146,"Intrigue"
+"Tournament","Tournaments",4,1,1,1,0,0,0,0,0,0,0,1,0,147,"Cornucopia"
+"Trade Route","Trade Routes",3,0,0,1,0,0,0,0,0,0,1,"?",1,148,"Prosperity"
+"Trader","Traders",4,0,0,1,0,0,0,1,0,0,1,0,0,149,"Hinterlands"
+"Trading Post","Trading Posts",5,0,0,1,0,0,0,0,0,0,2,0,0,150,"Intrigue"
+"Transmute","Transmutes","P",0,0,1,0,0,0,0,0,0,1,0,0,151,"Alchemy"
+"Treasure Map","Treasure Maps",4,0,0,1,0,0,0,0,0,0,2,0,0,152,"Seaside"
+"Treasury","Treasuries",5,1,1,1,0,0,0,0,0,0,0,1,0,153,"Seaside"
+"Tribute","Tributes",5,"?","?",1,0,0,0,0,0,0,0,"?",0,154,"Intrigue"
+"Trusty Steed","Trusty Steeds","*0","?","?",1,0,0,0,0,0,0,0,"?",0,155,"Cornucopia"
+"Tunnel","Tunnels",3,0,0,0,0,1,0,1,0,2,0,0,0,156,"Hinterlands"
+"University","Universities","P2",2,0,1,0,0,0,0,0,0,0,0,0,157,"Alchemy"
+"Upgrade","Upgrades",5,1,1,1,0,0,0,0,0,0,1,0,0,158,"Intrigue"
+"Vault","Vaults",5,0,2,1,0,0,0,0,0,0,0,"?",0,159,"Prosperity"
+"Venture","Ventures",5,0,0,0,1,0,0,0,0,0,0,1,0,160,"Prosperity"
+"Village","Villages",3,2,1,1,0,0,0,0,0,0,0,0,0,161,"Dominion"
+"Vineyard","Vineyards","P",0,0,0,0,1,0,0,0,"?",0,0,0,162,"Alchemy"
+"Walled Village","Walled Villages",4,2,1,1,0,0,0,0,0,0,0,0,0,163,"Promotional"
+"Warehouse","Warehouses",3,1,0,1,0,0,0,0,0,0,0,0,0,164,"Seaside"
+"Watchtower","Watchtowers",3,0,2,1,0,0,0,1,0,0,0,0,0,165,"Prosperity"
+"Wharf","Wharves",5,0,2,1,0,0,0,0,1,0,0,0,1,166,"Seaside"
+"Wishing Well","Wishing Wells",3,1,1,1,0,0,0,0,0,0,0,0,0,167,"Intrigue"
+"Witch","Witches",5,0,2,1,0,0,1,0,0,0,0,0,0,168,"Dominion"
+"Woodcutter","Woodcutters",3,0,0,1,0,0,0,0,0,0,0,2,1,169,"Dominion"
+"Worker's Village","Worker's Villages",4,2,1,1,0,0,0,0,0,0,0,0,1,170,"Prosperity"
+"Workshop","Workshops",3,0,0,1,0,0,0,0,0,0,0,0,0,171,"Dominion"
+"Young Witch","Young Witches",4,0,2,1,0,0,0,0,0,0,0,0,0,172,"Cornucopia"
