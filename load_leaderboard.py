@@ -77,6 +77,10 @@ def main():
 
         print num_matches, 'entries matched'
 
+        if num_matches == 0:
+            print 'ERROR: no entries found, so the regex is probably not doing its job anymore.'
+            break
+
         if num_matches != last_rank:
             print 'ERROR: # entries does not match last rank, so the regex is probably not doing its job anymore.'
             break
