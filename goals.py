@@ -211,6 +211,19 @@ def CheckMatchTheFlash(g):
 # Denied: Won the game by ending it on piles after a turn featuring 10 or more buys
 
 # == Value of victory points
+def CheckMatchVintner(g):
+    """Obtained at least 30 VP from Vineyards"""
+    ret = []
+    for pdeck in g.get_player_decks():
+        (player, deck) = (pdeck.player_name, pdeck.deck)
+        if 'Vineyard' not in deck:
+            continue
+        vy_pts = game.score_vineyard(deck)
+        if vy_pts >= 30:
+            ret.append(achievement(player, 
+                                   '%d VP from Vineyards' % vy_pts, vy_pts))
+    return ret
+
 def CheckMatchCarny(g):
     """Obtained at least 30 VP from Fairgrounds"""
     # Original suggestion: Blue ribbon - ended game with a Fairgrounds worth 
@@ -272,7 +285,7 @@ def CheckMatchSilkTrader(g):
     return ret    
 
 GroupFuncs([CheckMatchCarny, CheckMatchGardener, CheckMatchDukeOfEarl,
-            CheckMatchSilkTrader], 'vvp')
+            CheckMatchSilkTrader, CheckMatchVintner], 'vvp')
 
 # == Use of one card in a turn
 #("Puppet Master") Play more than 4 Possession in one turn.
